@@ -113,6 +113,12 @@ body {
     padding: 0;
 }
 
+/* Test form anhdev */
+.hidden-all {
+    display: none;
+}
+
+
 /* 11/11 hang5 */
 /* tran bo nho */
 .ubuntu {

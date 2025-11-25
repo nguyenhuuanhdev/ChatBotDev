@@ -13,7 +13,7 @@ const closeChatbot = document.querySelector("#close-chatbot");
 //const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${API_KEY}`;
 // api gemini 2.5
 // const API_KEY = "AIzaSyC3La4s-4pr4_2tm8-ER48aIo9KyI-Ngj8"; 
-const API_KEY = "AIzaSyBd-swBzuNiu221IFSXxQaR2enD7f-6BA0"; // Khóa API của bạn
+const API_KEY = "AIzaSyAmNp9OkCN1J5oMpMc8AIrCaNJCppG3lmM"; // Khóa API của bạn
 const NEW_MODEL_NAME = "gemini-2.5-flash"; // Thay đổi tên mô hình
 const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/${NEW_MODEL_NAME}:generateContent?key=${API_KEY}`;
 
@@ -26,6 +26,17 @@ const userData = {
         mime_type: null
     }
 };
+
+
+
+//test form anhdev
+const btn = document.getElementById("toggle-btn");
+const wrapper = document.getElementById("all-wrapper");
+
+btn.addEventListener("click", () => {
+    wrapper.classList.toggle("hidden-all");
+});
+
 
 // test 8/7
 const video = document.getElementById('bg-video');
