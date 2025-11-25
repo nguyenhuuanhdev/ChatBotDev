@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Image 🎁</title>
+    <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+    <link rel="stylesheet" href="image.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="icon" type="img" href="img/anh.png">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Floating elements animation */
+        body::before {
+            content: '';
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            top: 10%;
+            left: 10%;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        body::after {
+            content: '';
+            position: absolute;
+            width: 150px;
+            height: 150px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 50%;
+            bottom: 20%;
+            right: 10%;
+            animation: float 8s ease-in-out infinite reverse;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0px) rotate(0deg);
+            }
+
+            50% {
+                transform: translateY(-20px) rotate(180deg);
+            }
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1), 0 5px 15px rgba(0, 0, 0, 0.07);
+            width: 100%;
+            max-width: 450px;
+            text-align: center;
+            position: relative;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .header {
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 1rem;
+            opacity: 0.8;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-wrapper i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #667eea;
+            font-size: 1.1rem;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 15px 15px 15px 50px;
+            border: 2px solid #e1e5f2;
+            border-radius: 12px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.8);
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .file-upload {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .file-upload input[type="file"] {
+            position: absolute;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        .file-upload-label {
+            display: block;
+            padding: 20px;
+            border: 2px dashed #667eea;
+            border-radius: 12px;
+            background: rgba(102, 126, 234, 0.05);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .file-upload-label:hover {
+            border-color: #764ba2;
+            background: rgba(118, 75, 162, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .file-upload-icon {
+            font-size: 2.5rem;
+            color: #667eea;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .file-upload-text {
+            color: #667eea;
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 5px;
+        }
+
+        .file-upload-hint {
+            color: #999;
+            font-size: 0.9rem;
+        }
+
+        .file-selected {
+            background: rgba(76, 175, 80, 0.1);
+            border-color: #4caf50;
+        }
+
+        .file-selected .file-upload-icon {
+            color: #4caf50;
+        }
+
+        .file-selected .file-upload-text {
+            color: #4caf50;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .loading {
+            display: none;
+            margin-left: 10px;
+        }
+
+        .loading i {
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .success-message {
+            display: none;
+            background: linear-gradient(135deg, #4caf50, #45a049);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 20px;
+            font-weight: 600;
+            animation: slideIn 0.5s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .error-message {
+            background: linear-gradient(135deg, #f44336, #d32f2f);
+            color: white;
+            padding: 15px;
+            border-radius: 12px;
+            margin-top: 15px;
+            font-weight: 600;
+            display: none;
+            animation: slideIn 0.5s ease;
+        }
+
+        /* Preview image */
+        .image-preview {
+            display: none;
+            margin-top: 15px;
+            text-align: center;
+        }
+
+        .preview-img {
+            max-width: 200px;
+            max-height: 200px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            object-fit: cover;
+        }
+
+        .remove-image {
+            background: #f44336;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            margin-top: 10px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+
+
+        /* === THÊM MỚI: Styles cho hệ thống quà tặng === */
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            overflow-x: hidden;
+            width: 100%;
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-gift"></i> Gửi ảnh nhận quà!</h1>
+            <p>Chia sẻ khoảnh khắc đẹp của bạn và nhận quà tặng đặc biệt "mỗi ảnh nhận 3 lượt thôi nha !"</p>
+        </div>
+
+        <form id="imageForm">
+            <div class="form-group">
+                <div class="input-wrapper">
+                    <i class="fas fa-user"></i>
+                    <input type="text" id="userName" placeholder="Nhập tên của bạn..." required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="file-upload">
+                    <input type="file" id="userImage" accept="image/*" required>
+                    <label for="userImage" class="file-upload-label" id="fileLabel">
+                        <i class="fas fa-cloud-upload-alt file-upload-icon"></i>
+                        <div class="file-upload-text">Chọn ảnh để tải lên</div>
+                        <div class="file-upload-hint">JPG, PNG, GIF tối đa 10MB</div>
+                    </label>
+                </div>
+
+                <div class="image-preview" id="imagePreview">
+                    <img class="preview-img" id="previewImg" alt="Preview">
+                    <br>
+                    <button type="button" class="remove-image" id="removeImage">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+
+            <button type="submit" class="submit-btn" id="submitBtn">
+                <i class="fas fa-paper-plane"></i> Gửi ảnh ngay
+                <span class="loading" id="loading">
+                    <i class="fas fa-spinner"></i>
+                </span>
+            </button>
+        </form>
+
+        <div class="success-message" id="successMessage">
+            <i class="fas fa-check-circle"></i>
+            Gửi ảnh thành công! Quà tặng sẽ được gửi đến email của bạn sớm nhất.
+        </div>
+
+        <!-- === THÊM MỚI: Container cho hệ thống quà tặng === -->
+        <div class="gift-container" id="giftContainer">
+            <div class="gift-box">
+                <div class="gift-header" id="giftHeader">
+                    <i class="fas fa-gift"></i> <span id="congratsText"></span>
+                </div>
+                <div class="gift-message" id="giftMessage"></div>
+                <div class="gift-image-container">
+                    <img class="gift-image" id="giftImage" alt="Quà tặng">
+                </div>
+                <div class="gift-type" id="giftType"></div>
+                <button class="new-gift-btn" id="newGiftBtn">
+                    <i class="fas fa-redo"></i> Quà khác
+                </button>
+            </div>
+        </div>
+
+        <div class="error-message" id="errorMessage">
+            <i class="fas fa-exclamation-triangle"></i>
+            <span id="errorText">Có lỗi xảy ra, vui lòng thử lại!</span>
+        </div>
+    </div>
+    <script src="loichuc.js"></script>
+
+
+    <script>
+        // Cấu hình EmailJS
+        emailjs.init("u__R8orP4TX91Dnnr"); // Public Key của bạn
+
+        // Cấu hình Cloudinary
+        const CLOUDINARY_URL = 'https://api.cloudinary.com/v1_1/dg2qvyoeg/image/upload';
+        const CLOUDINARY_UPLOAD_PRESET = 'Nguyễn Hữu Ánh'; // Preset bạn vừa tạo
+
+        const form = document.getElementById('imageForm');
+        const fileInput = document.getElementById('userImage');
+        const fileLabel = document.getElementById('fileLabel');
+        const preview = document.getElementById('imagePreview');
+        const previewImg = document.getElementById('previewImg');
+        const removeBtn = document.getElementById('removeImage');
+        const submitBtn = document.getElementById('submitBtn');
+        const loading = document.getElementById('loading');
+        const successMsg = document.getElementById('successMessage');
+        const errorMsg = document.getElementById('errorMessage');
+        const errorText = document.getElementById('errorText');
+
+        // === THÊM MỚI: Dữ liệu cho hệ thống quà tặng ===
+        const congratulationsMessages = [
+            "Chúc mừng bạn!", "Tuyệt vời!", "Xuất sắc!", "Hoàn hảo!", "Thật tuyệt!",
+            "Bạn thật may mắn!", "Tài năng!", "Quá đỉnh!", "Siêu tuyệt!", "Tuyệt diệu!"
+        ];
+
+        const giftMessages = [
+            "🎉 Chúc bạn một ngày tràn đầy năng lượng!",
+            "💖 Mong bạn luôn vui vẻ và yêu đời!",
+            "🌟 Chúc bạn gặp nhiều may mắn trong cuộc sống!",
+            "🎁 Món quà nhỏ nhưng đầy yêu thương!",
+            "🚀 Chúc bạn sớm thành công với ước mơ của mình!",
+            "🍀 Chúc bạn luôn gặp điều tốt lành!",
+            "🌈 Cuộc sống luôn rực rỡ như cầu vồng nhé!",
+            "🧸 Gửi bạn một cái ôm ảo thật ấm áp!",
+            "🔥 Hãy tiếp tục cháy hết mình vì đam mê!",
+            "🍵 Nghỉ ngơi một chút, bạn xứng đáng được thư giãn!",
+            "💪 Mọi thử thách rồi sẽ qua, bạn làm được mà!",
+            "✨ Mỗi ngày là một cơ hội mới để tỏa sáng!",
+            "🧠 Hãy tin vào bản thân — bạn tuyệt vời hơn bạn nghĩ!",
+            "🌼 Cười lên nào, thế giới cần nụ cười của bạn!",
+            "🎨 Cuộc sống là bức tranh, bạn là họa sĩ tài ba!",
+            "📖 Hôm nay là một trang mới — viết thật đẹp nhé!",
+            "🕊️ Bình yên sẽ luôn tìm đến với người thiện lành!",
+            "💫 Mỗi khoảnh khắc đều có thể là điều kỳ diệu!",
+            "🌻 Hãy sống chậm lại, yêu thương nhiều hơn!",
+            "🥇 Bạn là người hùng trong câu chuyện của chính mình!",
+            "💌 Một lời nhắn nhỏ: Bạn rất đáng yêu và đặc biệt!",
+            "🐾 Hãy bước tiếp từng chút, dù là bước nhỏ!",
+            "🎈 Chúc bạn một ngày nhẹ nhàng và đầy tiếng cười!",
+            "🌙 Ngày mai sẽ tốt hơn hôm nay — hãy tin vậy!",
+            "🧁 Tự thưởng cho bản thân một điều ngọt ngào nhé!",
+            "🎶 Cuộc sống có lúc cao trào, có lúc lặng yên — cứ tận hưởng!",
+            "🍰 Ngọt ngào như bánh, dễ thương như bạn!",
+            "💡 Ý tưởng hay sẽ đến khi tâm trí bạn được thả lỏng!",
+            "🎇 Hãy tỏa sáng theo cách của riêng bạn!",
+            "🌙 Ngủ ngon nhé, mai thức dậy với nụ cười nha!",
+            "😴 Chúc bạn có một giấc mơ thật đẹp và bình yên.",
+            "🛌 Đêm nay hãy để mọi mệt mỏi trôi theo giấc ngủ...",
+            "💤 Ngủ ngoan nha, mai là một ngày tuyệt vời khác!",
+            "🌟 Giấc mơ đêm nay sẽ dẫn bạn đến những điều kỳ diệu!",
+            "🌌 Bầu trời đêm chúc bạn một giấc ngủ thật sâu!",
+            "🧸 Cuộn tròn trong chăn và để trái tim được nghỉ ngơi nhé!",
+            "✨ Ngủ sớm để sớm gặp lại những điều tốt đẹp nha!",
+            "🌜 Đêm nay có trăng canh giấc, bạn ngủ ngon nhé!",
+            "💖 Gửi một cái ôm ảo chúc bạn ngủ thật ngon!",
+            "🎯 Mọi việc bạn làm hôm nay đều sẽ thuận lợi nhé!",
+            "🧲 Thu hút mọi điều tốt đẹp và tích cực đến với bạn!",
+            "🔮 Vũ trụ đang sắp xếp những điều tuyệt vời cho bạn!",
+            "🪄 Chúc bạn luôn được bao quanh bởi điều kỳ diệu!",
+            "🎉 Cứ tự tin bước tiếp, may mắn luôn đồng hành!",
+            "💫 Gặp đúng người, đúng thời điểm, đúng cơ hội!",
+            "🌟 Cơ hội tốt sắp đến rồi, hãy nắm lấy nhé!",
+            "🌿 Chúc bạn luôn mạnh khỏe mỗi ngày!",
+            "💪 Sức khỏe dồi dào, tinh thần thật tốt!",
+            "🛌 Nghỉ ngơi thật tốt, giữ gìn sức khỏe nhé!",
+            "🌞 Chào ngày mới với thể lực và nụ cười!",
+            "☕ Một tách trà ấm, một cơ thể khỏe mạnh!",
+            "🧘‍♀️ Cân bằng bên trong khỏe khoắn bên ngoài!",
+            "🥦 Đừng quên ăn uống đủ chất mỗi ngày!",
+            "🚶‍♂️ Một bước đi nhẹ nhàng cho trái tim khỏe mạnh!",
+            "🛁 Thư giãn, thở sâu – cơ thể sẽ cảm ơn bạn!",
+            "🍎 Mỗi ngày một trái táo – không cần gặp bác sĩ!",
+            "🧴 Rửa tay sạch – bảo vệ bản thân và người thân!",
+            "🤒 Nhớ mặc ấm nếu ra gió nhé!",
+            "🧠 Sức khỏe không chỉ ở cơ thể mà cả tâm trí!",
+            "🥗 Hãy chọn thực phẩm yêu thương cơ thể bạn!",
+            "🚿 Tắm mát, đầu óc sảng khoái, lòng nhẹ tênh!",
+            "🌈 Giữ tâm vui, thân thể mới bình an!",
+            "🎈 Cười mỗi ngày, trẻ hơn cả thuốc bổ!",
+            "🧡 Sức khỏe là món quà quý giá nhất, giữ gìn nhé!",
+            "🔥 Hãy tiếp tục tiến lên, bạn đang đi đúng đường!",
+            "💪 Mỗi ngày cố gắng một chút, bạn sẽ ngạc nhiên với chính mình!",
+            "🚀 Không gì là không thể, chỉ cần bạn không bỏ cuộc!",
+            "🧗‍♀️ Leo dốc thì mệt, nhưng lên tới đỉnh bạn sẽ thấy xứng đáng!",
+            "🌱 Cố gắng hôm nay là quả ngọt ngày mai!",
+            "📈 Sai lầm không làm bạn yếu đi mà làm bạn mạnh hơn!",
+            "🌟 Tỏa sáng theo cách của bạn, không cần giống ai cả!",
+            "🛠️ Hãy kiên trì, thành công cần thời gian và nỗ lực!",
+            "🌼 Cuộc sống không cần hoàn hảo, chỉ cần hạnh phúc là đủ!",
+            "🌈 Mỗi ngày là một cơ hội mới để yêu thương và trưởng thành!",
+            "🎈 Hãy sống chậm lại, nhìn trời cao và mỉm cười!",
+            "📖 Mỗi ngày là một trang mới, bạn là người viết nên câu chuyện đó!",
+            "🍀 Điều tuyệt vời có thể đến từ những điều nhỏ nhặt nhất!",
+            "🎨 Hãy biến cuộc sống thành bức tranh bạn muốn vẽ!",
+            "🕊️ Buông bỏ điều cũ, bạn sẽ đón được điều mới!",
+            "☀️ Ngày nắng hay mưa vẫn là một ngày đáng sống!",
+            "🍃 Bình yên không ở đâu xa, nó ở trong tâm bạn!",
+            "🧭 Đừng quên: bạn đang sống, không chỉ tồn tại!",
+            "🌺 Mỗi ngày đều có điều đặc biệt, chỉ cần bạn mở lòng đón nhận!",
+            "🌤️ Dù hôm nay có u ám, ngày mai sẽ lại sáng thôi!",
+            "🎵 Hãy để cuộc sống vang lên theo điệu nhạc riêng của bạn!",
+            "🌊 Cứ như sóng biển, đôi khi phải lùi để tiến xa hơn!",
+            "🏡 Bình yên bắt đầu từ những điều giản dị quanh ta!",
+            "🧩 Cuộc sống là những mảnh ghép từ từ rồi sẽ hoàn thiện!",
+            "🌟 Ánh sáng luôn xuất hiện sau bóng tối!",
+            "📦 Đừng sợ thay đổi đôi khi điều tốt đẹp đến từ bất ngờ!",
+            "💬 Một lời tử tế có thể làm ngày của ai đó tốt hơn!",
+            "🎭 Hãy là chính bạn, vì không ai thay thế được!",
+            "🚦 Dừng lại một chút cũng không sao miễn là bạn không từ bỏ!",
+            "🕰️ Mọi chuyện đều xảy ra đúng lúc của nó!",
+            "🧳 Mỗi hành trình đều đáng giá, kể cả khi chưa thấy đích đến!",
+            "💫 Cuộc sống không hoàn hảo và điều đó hoàn toàn ổn!",
+            "🪴 Dành thời gian chăm sóc bản thân như chăm một chậu cây nhỏ!",
+            "✍️ Viết ra điều bạn biết ơn mỗi ngàyvà bạn sẽ thấy cuộc sống đẹp hơn!",
+            "🍂 Đôi khi buông bỏ cũng là một cách để trưởng thành!"
+        ];
+
+        const gifts = [
+            {
+                type: "🎁",
+                image: "img/24.png"
+            },
+            {
+                type: "🌹",
+                image: "img/25.png"
+            },
+            {
+                type: "📱",
+                image: "img/14.png"
+            },
+            {
+                type: "☕",
+                image: "img/15.png"
+            },
+            {
+                type: "🧸",
+                image: "img/13.png"
+            },
+            {
+                type: "🍰",
+                image: "img/61.png"
+            },
+            {
+                type: "📚",
+                image: "img/anh1.png"
+            },
+            {
+                type: "🎧 ",
+                image: "img/logo.png"
+            },
+            {
+                type: "🌿",
+                image: "img/27.png"
+            },
+            {
+                type: "🍫",
+                image: "img/57.png"
+            }
+        ];
+
+        // === THÊM MỚI: Elements cho hệ thống quà tặng ===
+        const giftContainer = document.getElementById('giftContainer');
+        const congratsText = document.getElementById('congratsText');
+        const giftMessage = document.getElementById('giftMessage');
+        const giftImage = document.getElementById('giftImage');
+        const giftType = document.getElementById('giftType');
+        const newGiftBtn = document.getElementById('newGiftBtn');
+
+        // Preview ảnh khi chọn file
+        fileInput.addEventListener('change', function (e) {
+            const file = e.target.files[0];
+            if (file) {
+                // Kiểm tra size file (10MB)
+                if (file.size > 10 * 1024 * 1024) {
+                    showError('File quá lớn! Vui lòng chọn ảnh dưới 10MB.');
+                    fileInput.value = '';
+                    return;
+                }
+
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    previewImg.src = e.target.result;
+                    preview.style.display = 'block';
+                    fileLabel.classList.add('file-selected');
+                    fileLabel.innerHTML = `
+                        <i class="fas fa-check-circle file-upload-icon"></i>
+                        <div class="file-upload-text">Ảnh đã chọn: ${file.name}</div>
+                        <div class="file-upload-hint">Nhấn để thay đổi ảnh khác</div>
+                    `;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Xóa ảnh preview
+        removeBtn.addEventListener('click', function () {
+            fileInput.value = '';
+            preview.style.display = 'none';
+            fileLabel.classList.remove('file-selected');
+            fileLabel.innerHTML = `
+                <i class="fas fa-cloud-upload-alt file-upload-icon"></i>
+                <div class="file-upload-text">Chọn ảnh để tải lên</div>
+                <div class="file-upload-hint">JPG, PNG, GIF tối đa 10MB</div>
+            `;
+        });
+
+        // Submit form
+        form.addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            const name = document.getElementById('userName').value.trim();
+            const file = fileInput.files[0];
+
+            if (!name || !file) {
+                showError('Vui lòng nhập đầy đủ thông tin!');
+                return;
+            }
+
+            setLoading(true);
+            hideMessages();
+
+            try {
+                // Upload lên Cloudinary
+                const formData = new FormData();
+                formData.append('file', file);
+                formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
+                formData.append('folder', 'user-submissions'); // Tổ chức ảnh vào folder
+                formData.append('tags', `user_submission,${name.replace(/\s+/g, '_').toLowerCase()},${new Date().toISOString().split('T')[0]}`); // Tag với tên và ngày
+
+                const uploadResponse = await fetch(CLOUDINARY_URL, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!uploadResponse.ok) {
+                    throw new Error('Upload ảnh thất bại');
+                }
+
+                const uploadResult = await uploadResponse.json();
+                const imageUrl = uploadResult.secure_url;
+
+                // Gửi email thông báo qua EmailJS
+                await emailjs.send('service_rq6wmjp', 'template_grjhet2', {
+                    user_name: name,
+                    image_url: imageUrl,
+                    image_public_id: uploadResult.public_id,
+                    upload_time: new Date().toLocaleString('vi-VN')
+                });
+
+                // Hiển thị thành công
+                showSuccess();
+
+                // === THÊM MỚI: Hiển thị quà tặng sau 1.5 giây ===
+                setTimeout(() => {
+                    showRandomGift();
+                }, 1500);
+
+                form.reset();
+                removeBtn.click(); // Clear preview
+
+            } catch (error) {
+                console.error('Error:', error);
+                showError('Có lỗi xảy ra: ' + error.message);
+            } finally {
+                setLoading(false);
+            }
+        });
+
+        // === THÊM MỚI: Hàm hiển thị quà tặng ngẫu nhiên ===
+        let giftCount = 0;
+        const MAX_GIFT_COUNT = 3;
+
+        function showRandomGift() {
+            giftCount++;
+
+            if (giftCount > MAX_GIFT_COUNT) {
+                // Nếu đã nhận đủ quà thì ẩn nút và thông báo
+                giftContainer.innerHTML = `
+            <div class="gift-box">
+                <div class="gift-header">
+                    🎉 Bạn đã nhận đủ ${MAX_GIFT_COUNT} món quà rồi!
+                </div>
+                <div class="gift-message">Hẹn gặp lại bạn lần sau với nhiều phần thưởng hấp dẫn hơn!</div>
+            </div>
+        `;
+                return;
+            }
+
+            const randomCongrats = congratulationsMessages[Math.floor(Math.random() * congratulationsMessages.length)];
+            const randomMessage = giftMessages[Math.floor(Math.random() * giftMessages.length)];
+            const randomGift = gifts[Math.floor(Math.random() * gifts.length)];
+
+            congratsText.textContent = randomCongrats;
+            giftMessage.textContent = randomMessage;
+            giftImage.src = randomGift.image;
+            giftType.textContent = randomGift.type;
+
+            giftContainer.style.display = 'block';
+            form.style.display = 'none';
+            createConfetti();
+
+            // Ẩn nút nếu đủ quà sau lần này
+            if (giftCount >= MAX_GIFT_COUNT) {
+                newGiftBtn.style.display = 'none';
+            }
+        }
+
+
+
+        // === THÊM MỚI: Hiệu ứng confetti ===
+        function createConfetti() {
+            const colors = ['#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#ffeaa7', '#dda0dd'];
+
+            for (let i = 0; i < 30; i++) {
+                const confetti = document.createElement('div');
+                confetti.classList.add('confetti');
+                confetti.style.left = Math.random() * 100 + '%';
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.animation = `confettiFall ${Math.random() * 3 + 2}s linear forwards`;
+                confetti.style.animationDelay = Math.random() * 2 + 's';
+                document.body.appendChild(confetti);
+
+                setTimeout(() => {
+                    if (confetti.parentNode) {
+                        confetti.parentNode.removeChild(confetti);
+                    }
+                }, 5000);
+            }
+        }
+
+        // === THÊM MỚI: CSS animation cho confetti ===
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes confettiFall {
+                0% {
+                    transform: translateY(-100vh) rotate(0deg);
+                    opacity: 1;
+                }
+                100% {
+                    transform: translateY(100vh) rotate(720deg);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // === THÊM MỚI: Event listener cho nút quà mới ===
+        newGiftBtn.addEventListener('click', showRandomGift);
+
+        function setLoading(isLoading) {
+            submitBtn.disabled = isLoading;
+            loading.style.display = isLoading ? 'inline-block' : 'none';
+        }
+
+        function showSuccess() {
+            successMsg.style.display = 'block';
+            setTimeout(() => {
+                successMsg.style.display = 'none';
+            }, 5000);
+        }
+
+        function showError(message) {
+            errorText.textContent = message;
+            errorMsg.style.display = 'block';
+            setTimeout(() => {
+                errorMsg.style.display = 'none';
+            }, 5000);
+        }
+
+        function hideMessages() {
+            successMsg.style.display = 'none';
+            errorMsg.style.display = 'none';
+            // === THÊM MỚI: Ẩn gift container khi submit mới ===
+            giftContainer.style.display = 'none';
+        }
+    </script>
+</body>
+
+</html>

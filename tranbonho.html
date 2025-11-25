@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <meta content="Tràn ngập bộ nhớ" property="og:title" />
+  <!-- <link href="https://i.imgur.com/ZyFRpse.png" rel="shortcut icon" type="image/x-icon" /> -->
+  <link rel="icon" type="img" href="img/anh.png">
+
+
+  <meta content="website" property="og:type" />
+  <meta content="#FCFCFD" name="theme-color" />
+  <meta content="https://i.pinimg.com/736x/80/b8/68/80b8687aaeccb6fb90140597a0be2db5.jpg" property="og:image" />
+  <link href="https://fonts.googleapis.com/css2?family=Coiny&display=swap" rel="stylesheet" />
+  <title>Tràn ngập bộ nhớ</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #eeeeee;
+      font-family: Arial, sans-serif;
+      overflow: hidden;
+    }
+
+    h1 {
+      font-family: "Coiny", system-ui;
+      font-weight: 400;
+      font-style: normal;
+      position: fixed;
+      top: 30px;
+      left: 50%;
+      font-size: 50px;
+      transform: translateX(-50%);
+      text-align: center;
+      z-index: 10;
+      color: #333;
+      margin: 0;
+    }
+
+    .footer-link {
+      position: fixed;
+      bottom: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      text-align: center;
+      font-size: 14px;
+      color: #333;
+      text-decoration: none;
+      z-index: 10;
+    }
+
+    button {
+      font-family: "Coiny", system-ui;
+      font-weight: 400;
+      font-style: normal;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 10;
+      padding: 15px 30px;
+      font-size: 18px;
+      background-color: #0a2b57;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #1b53a7;
+    }
+
+    .notification {
+      position: absolute;
+      width: 240px;
+      height: 160px;
+      background-color: #FFB6C1;
+      color: rgb(0, 0, 0);
+      font-size: 16px;
+      border-radius: 10px;
+      display: flex;
+      flex-direction: column;
+      box-sizing: border-box;
+      z-index: 2;
+      border: 4px solid #ffffff;
+      animation: fadeIn 0.5s ease-in-out;
+    }
+
+    .notification-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      padding: 5px 10px;
+      background-color: #ffffff;
+      border-radius: 5px 5px 0 0;
+      color: white;
+      font-weight: bold;
+      box-sizing: border-box;
+    }
+
+    .notification-header span {
+      font-family: "Coiny", system-ui;
+      font-weight: 400;
+      font-style: normal;
+      color: rgb(0, 0, 0);
+      text-align: center;
+      flex-grow: 1;
+    }
+
+    .notification p {
+      font-family: "Coiny", system-ui;
+      font-weight: 400;
+      font-style: normal;
+      margin: 0;
+      text-align: center;
+      padding: 10px;
+      flex-grow: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100%;
+    }
+
+    .minimize-btn {
+      font-size: 20px;
+      cursor: pointer;
+      padding: 5px 8px;
+      background-color: transparent;
+      border: none;
+      color: rgb(0, 0, 0);
+      border-radius: 3px;
+      transition: background-color 0.2s ease;
+    }
+
+    .minimize-btn:hover {
+      background-color: rgba(255, 0, 0, 0.2);
+    }
+
+    .final-message {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: rgba(255, 255, 255, 0.95);
+      padding: 30px;
+      border-radius: 15px;
+      text-align: center;
+      font-family: "Coiny", system-ui;
+      font-size: 24px;
+      color: #0a2b57;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      z-index: 100;
+      cursor: pointer;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: scale(0.5);
+      }
+
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    /* Responsive cho mobile */
+    @media (max-width: 768px) {
+      h1 {
+        font-size: 35px;
+        top: 20px;
+      }
+
+      button {
+        padding: 12px 25px;
+        font-size: 16px;
+      }
+
+      .notification {
+        width: 200px;
+        height: 140px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Anh có điều muốn nói :3</h1>
+  <button id="playButton" onclick="generateRandomNotifications()">Nhấn đây nè</button>
+
+  <div class="final-message" id="finalMessage" onclick="redirectToNewPage()">
+    <p id="text1"></p>
+    <p id="text2"></p>
+  </div>
+
+  <audio id="audioPlayer" src="img/TBN.mp3"></audio>
+
+  <script>
+    const playButton = document.getElementById("playButton");
+    const audioPlayer = document.getElementById("audioPlayer");
+
+    playButton.addEventListener("click", function () {
+      audioPlayer.play().catch(function (error) {
+        console.log("Audio play failed:", error);
+      });
+    });
+
+    const messages = [
+      "Nhớ nhớ nhớ em!",
+      "Em có biết anh yêu em không?",
+      "Mỗi ngày anh đều nghĩ về em",
+      "Em là ánh sáng của anh",
+      "Anh muốn được ở bên em mãi",
+      "Anh nhớ em từng giây từng phút.",
+      "Trái tim anh luôn hướng về em.",
+      "Em là điều tuyệt vời nhất anh từng có.",
+      "Không có em, mọi thứ trở nên vô nghĩa.",
+      "Anh yêu nụ cười của em hơn bất cứ điều gì.",
+      "Mỗi khoảnh khắc bên em đều quý giá.",
+      "Anh chỉ muốn nắm tay em đi hết cuộc đời.",
+      "Em là giấc mơ anh không bao giờ muốn tỉnh dậy.",
+      "Anh thấy mình may mắn vì có em trong đời.",
+      "Em khiến cuộc sống anh rực rỡ hơn.",
+      "Anh nhớ ánh mắt dịu dàng của em.",
+      "Em chính là lý do khiến anh mỉm cười mỗi ngày.",
+      "Anh không thể ngừng nghĩ về em.",
+      "Em là ngôi sao sáng nhất trong bầu trời của anh.",
+      "Anh chỉ cần em, không cần gì thêm.",
+      "Tình yêu anh dành cho em lớn hơn cả vũ trụ này.",
+      "Anh muốn bảo vệ em suốt đời.",
+      "Chỉ cần em hạnh phúc, anh sẽ làm tất cả.",
+      "Em là tất cả những gì anh mong ước.",
+      "Mỗi ngày có em là một ngày trọn vẹn."
+
+    ];
+
+    function generateRandomNotifications() {
+      // Ẩn button sau khi click
+      playButton.style.display = 'none';
+
+      const notificationCount = 100;
+
+      for (let i = 0; i < notificationCount; i++) {
+        setTimeout(() => {
+          const notification = document.createElement('div');
+          notification.className = 'notification';
+
+          const randomMessage = messages[Math.floor(Math.random() * messages.length)];
+          notification.innerHTML = `
+            <div class='notification-header'>
+              <span>Tràn ngập bộ nhớ</span>
+              <button class='minimize-btn' onclick='minimizeNotification(this)'>×</button>
+            </div>
+            <p>${randomMessage}</p>
+          `;
+
+          // Đảm bảo notification không bị che khuất bởi title
+          const maxX = window.innerWidth - 240;
+          const maxY = window.innerHeight - 160;
+          const minY = 100; // Để tránh che title
+
+          const x = Math.random() * Math.max(0, maxX);
+          const y = minY + Math.random() * Math.max(0, maxY - minY);
+
+          notification.style.left = `${x}px`;
+          notification.style.top = `${y}px`;
+
+          document.body.appendChild(notification);
+
+          // Hiển thị thông báo cuối cùng sau khi tất cả notifications xuất hiện
+          if (i === notificationCount - 1) {
+            setTimeout(() => {
+              showFinalMessage();
+            }, 2000);
+          }
+        }, i * 150);
+      }
+    }
+
+    function minimizeNotification(button) {
+      const notification = button.closest('.notification');
+      notification.style.display = 'none';
+    }
+
+    function showFinalMessage() {
+      const finalMessage = document.getElementById('finalMessage');
+      const text1 = document.getElementById('text1');
+      const text2 = document.getElementById('text2');
+
+      text1.textContent = "Anh yêu em nhiều lắm! ❤️";
+      text2.textContent = "Click để tiếp tục...";
+
+      finalMessage.style.display = 'block';
+    }
+
+    function redirectToNewPage() {
+      // Có thể thêm link chuyển hướng ở đây
+      alert("Em đã nhận được tình yêu của anh! 💕");
+    }
+
+    // Tạo footer link
+    document.addEventListener("DOMContentLoaded", function () {
+      var encodedText = 'Cre: Nguyễn Hữu Ánh';
+      var footer = document.createElement("a");
+      footer.className = "footer-link";
+      footer.innerHTML = encodedText;
+      document.body.appendChild(footer);
+    });
+  </script>
+</body>
+
+</html>

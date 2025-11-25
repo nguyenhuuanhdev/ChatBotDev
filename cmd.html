@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Command Prompt</title>
+    <link rel="icon" type="img" href="img/anh.png">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Consolas&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Consolas', 'Courier New', monospace;
+            background: #000000;
+            color: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            overflow: hidden;
+        }
+
+        /* Intro Screen */
+        #intro {
+            text-align: center;
+            animation: fadeIn 1s ease;
+        }
+
+        #intro h2 {
+            font-size: 2rem;
+            margin-bottom: 30px;
+            color: #ffffff;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        #startBtn {
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            background: linear-gradient(180deg, #0997ff 0%, #0053ee 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(9, 151, 255, 0.4);
+        }
+
+        #startBtn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(9, 151, 255, 0.6);
+        }
+
+        #startBtn:active {
+            transform: translateY(0);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* CMD Container */
+        .cmd-wrapper {
+            display: none;
+            width: 100%;
+            max-width: 1000px;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .cmd-wrapper.active {
+            display: block;
+        }
+
+        .cmd-container {
+            width: 100%;
+            background: #000000;
+            border: 2px solid #808080;
+            box-shadow: 0 0 0 1px #000000, 0 0 0 2px #dfdfdf;
+        }
+
+        .cmd-header {
+            background: linear-gradient(180deg, #0997ff 0%, #0053ee 100%);
+            padding: 4px 8px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 13px;
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            color: #ffffff;
+            font-weight: 600;
+        }
+
+        .cmd-title {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .cmd-icon {
+            width: 16px;
+            height: 16px;
+            background: #ffffff;
+            border-radius: 2px;
+        }
+
+        .cmd-buttons {
+            display: flex;
+            gap: 2px;
+        }
+
+        .cmd-btn {
+            width: 22px;
+            height: 18px;
+            background: #0078d7;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            cursor: pointer;
+        }
+
+        .cmd-btn:hover {
+            background: #1a8fff;
+        }
+
+        .cmd-body {
+            padding: 10px;
+            height: 500px;
+            background: #000000;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        .cmd-body::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .cmd-body::-webkit-scrollbar-track {
+            background: #1a1a1a;
+        }
+
+        .cmd-body::-webkit-scrollbar-thumb {
+            background: #555;
+            border-radius: 4px;
+        }
+
+        .line {
+            margin-bottom: 4px;
+            line-height: 1.4;
+            font-size: 15px;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+
+        .prompt {
+            color: #ffffff;
+        }
+
+        .command {
+            color: #ffffff;
+            word-break: break-word;
+        }
+
+        .cursor {
+            display: inline-block;
+            width: 8px;
+            height: 16px;
+            background: #ffffff;
+            animation: blink 1s step-end infinite;
+            margin-left: 2px;
+            vertical-align: text-bottom;
+        }
+
+        @keyframes blink {
+
+            0%,
+            50% {
+                opacity: 1;
+            }
+
+            51%,
+            100% {
+                opacity: 0;
+            }
+        }
+
+        .typing {
+            border-right: 2px solid #ffffff;
+            padding-right: 2px;
+        }
+
+        .header-text {
+            color: #ffffff;
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            #intro h2 {
+                font-size: 1.5rem;
+                margin-bottom: 20px;
+            }
+
+            #startBtn {
+                padding: 12px 30px;
+                font-size: 1rem;
+            }
+
+            .cmd-container {
+                max-width: 100%;
+            }
+
+            .cmd-header {
+                padding: 3px 6px;
+                font-size: 11px;
+            }
+
+            .cmd-icon {
+                width: 14px;
+                height: 14px;
+            }
+
+            .cmd-btn {
+                width: 20px;
+                height: 16px;
+                font-size: 9px;
+            }
+
+            .cmd-body {
+                padding: 8px;
+                height: 400px;
+            }
+
+            .line {
+                font-size: 13px;
+            }
+
+            .cursor {
+                width: 6px;
+                height: 14px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Intro Screen -->
+    <div id="intro">
+        <h2>Cậu hay thích nghe bài gì để tớ up lại ạ 🥺 </h2>
+        <button id="startBtn">Vào</button>
+    </div>
+
+    <!-- CMD Terminal -->
+    <div class="cmd-wrapper" id="cmdWrapper">
+        <div class="cmd-container">
+            <div class="cmd-header">
+                <div class="cmd-title">
+                    <div class="cmd-icon"></div>
+                    <span>Command Prompt</span>
+                </div>
+                <div class="cmd-buttons">
+                    <div class="cmd-btn">_</div>
+                    <div class="cmd-btn">□</div>
+                    <div class="cmd-btn">×</div>
+                </div>
+            </div>
+            <div class="cmd-body" id="terminal">
+                <div class="header-text">Microsoft Windows [Version 10.0.22631.6199]</div>
+                <div class="header-text">(c) Microsoft Corporation. All rights reserved.</div>
+                <div class="header-text" style="margin-bottom: 15px;"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Audio -->
+    <audio id="bgMusic">
+        <source src="img/lalung.mp3" type="audio/mpeg">
+    </audio>
+
+    <script>
+        // const lyrics = [
+        //     { text: "Nắng còn vương vai", time: 0 },
+        //     { text: "Biết rằng ta sai", time: 0 },
+        //     { text: "Ta chẳng còn tương lai", time: 0 },
+        //     { text: "Em nỡ lòng yêu ai", time: 0 },
+        //     { text: "Cơn mưa rơi nghe hững hờ", time: 0 },
+        //     { text: "Em mang đến toàn bất ngờ", time: 0 },
+        //     { text: "Có ai vẫn mong, có trông, có chờ", time: 0 },
+        //     { text: "Vẫn vương, có mưa, vẫn trông, vẫn chờ", time: 0 },
+        //     { text: "Em ngang qua thật hững hờ", time: 0 },
+        //     { text: "Như tức nước anh vỡ bờ", time: 0 },
+        //     { text: "Có mơ thấy em, bóng ai, nhớ em", time: 0 },
+        //     { text: "Nhớ câu \"Love you\", \"Miss you\" từng hẹn thề", time: 0 }
+        // ];
+        const lyrics = [
+            "Chỉ tình cờ nhìn em rồi mang theo những cơn đau thét gào",
+            "Lạ lùng em tới",
+            "Hãy tới bên anh trong chiều đông xa vắng",
+            "Mà sao giờ đây nhìn lại chẳng còn thấy em?",
+            "Lạ lùng em với gió hát lên câu ca làm anh thao thức",
+            "Mà bao say mê nồng nàn giờ đã phai mau",
+            "Kìa nắng ngập tràn",
+            "Nhưng giấc mơ lại vừa bay đi",
+            "Gạt hết cuộc đời lẻ loi",
+            "Thôi mình anh",
+            "Lại ngồi nhớ emm"
+        ];
+
+        const intro = document.getElementById('intro');
+        const startBtn = document.getElementById('startBtn');
+        const cmdWrapper = document.getElementById('cmdWrapper');
+        const terminal = document.getElementById('terminal');
+        const bgMusic = document.getElementById('bgMusic');
+
+        let currentLineIndex = 0;
+        let currentCharIndex = 0;
+        let isTyping = false;
+
+        const typingSpeed = 260;
+        const pauseBetweenLines = 2000; // 2 giây giữa các câu
+
+        // Start button click
+        startBtn.addEventListener('click', () => {
+            intro.style.display = 'none';
+            cmdWrapper.classList.add('active');
+
+            // Play music
+            bgMusic.play().catch(e => console.log('Audio play failed:', e));
+
+            // Start typing after 500ms
+            setTimeout(startTyping, 500);
+        });
+
+        function createPrompt() {
+            return `<span class="prompt">C:\\Windows\\System32> </span>`;
+        }
+
+        function typeCharacter() {
+            if (currentLineIndex >= lyrics.length) {
+                isTyping = false;
+                const finalLine = document.createElement('div');
+                finalLine.className = 'line';
+                finalLine.innerHTML = createPrompt() + '<span class="cursor"></span>';
+                terminal.appendChild(finalLine);
+                terminal.scrollTop = terminal.scrollHeight;
+                return;
+            }
+
+            const currentText = lyrics[currentLineIndex];
+            const lineElement = document.getElementById('current-typing-line');
+
+            if (currentCharIndex < currentText.length) {
+                const typedText = currentText.substring(0, currentCharIndex + 1);
+                lineElement.innerHTML = createPrompt() + `<span class="command typing">${typedText}</span>`;
+                currentCharIndex++;
+                terminal.scrollTop = terminal.scrollHeight;
+                setTimeout(typeCharacter, typingSpeed);
+            } else {
+                // Hoàn thành gõ dòng hiện tại
+                lineElement.innerHTML = createPrompt() + `<span class="command">${currentText}</span>`;
+                lineElement.removeAttribute('id');
+                isTyping = false;
+                terminal.scrollTop = terminal.scrollHeight;
+
+                // Chuyển sang dòng tiếp theo
+                currentLineIndex++;
+                currentCharIndex = 0;
+
+                if (currentLineIndex < lyrics.length) {
+                    setTimeout(nextLine, pauseBetweenLines);
+                } else {
+                    // Hết câu, hiển thị cursor cuối
+                    const finalLine = document.createElement('div');
+                    finalLine.className = 'line';
+                    finalLine.innerHTML = createPrompt() + '<span class="cursor"></span>';
+                    terminal.appendChild(finalLine);
+                    terminal.scrollTop = terminal.scrollHeight;
+                }
+            }
+        }
+
+        function nextLine() {
+            if (isTyping || currentLineIndex >= lyrics.length) return;
+
+            isTyping = true;
+            const lineDiv = document.createElement('div');
+            lineDiv.className = 'line';
+            lineDiv.id = 'current-typing-line';
+            terminal.appendChild(lineDiv);
+            terminal.scrollTop = terminal.scrollHeight;
+            typeCharacter();
+        }
+
+        function startTyping() {
+            if (currentLineIndex < lyrics.length) {
+                isTyping = true;
+                const lineDiv = document.createElement('div');
+                lineDiv.className = 'line';
+                lineDiv.id = 'current-typing-line';
+                terminal.appendChild(lineDiv);
+                typeCharacter();
+            }
+        }
+
+        // Click to speed up (optional)
+        document.body.addEventListener('click', (e) => {
+            if (cmdWrapper.classList.contains('active') && !isTyping && currentLineIndex < lyrics.length) {
+                nextLine();
+            }
+        });
+    </script>
+</body>
+
+</html>

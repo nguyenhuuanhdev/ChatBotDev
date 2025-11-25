@@ -1,0 +1,28 @@
+/* Reset margin/padding */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: black;
+    /* tránh khoảng trống lộ ra */
+    height: 100vh;
+    overflow: hidden;
+}
+
+/* Fullscreen video that maintains aspect ratio */
+#bgVideo {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    width: 100vw;
+    height: 100vh;
+    transform: translate(-50%, -50%);
+    object-fit: contain;
+    /* 👈 Không bị méo */
+    object-position: center center;
+    z-index: -1;
+    background-color: black;
+}

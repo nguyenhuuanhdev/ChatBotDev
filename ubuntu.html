@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ubuntu</title>
+    <link rel="icon" type="img" href="img/anh.png">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Ubuntu+Mono:wght@400;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Ubuntu Mono', monospace;
+            background: #000000;
+            color: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        .terminal-container {
+            width: 100%;
+            max-width: 1000px;
+            background: #300a24;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 0 40px rgba(138, 226, 52, 0.3);
+        }
+
+        .terminal-header {
+            background: #2d2d2d;
+            padding: 10px 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .terminal-button {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .btn-close {
+            background: #ff5f56;
+        }
+
+        .btn-minimize {
+            background: #ffbd2e;
+        }
+
+        .btn-maximize {
+            background: #27c93f;
+        }
+
+        .terminal-title {
+            margin-left: 15px;
+            font-size: 14px;
+            color: #ddd;
+        }
+
+        .terminal-body {
+            padding: 20px;
+            min-height: 500px;
+        }
+
+        .line {
+            margin-bottom: 8px;
+            line-height: 1.5;
+            font-size: 16px;
+        }
+
+        .prompt {
+            color: #8ae234;
+            font-weight: bold;
+        }
+
+        .username {
+            color: #8ae234;
+            font-weight: bold;
+        }
+
+        .at {
+            color: #ffffff;
+        }
+
+        .hostname {
+            color: #8ae234;
+            font-weight: bold;
+        }
+
+        .path {
+            color: #729fcf;
+            font-weight: bold;
+        }
+
+        .command {
+            color: #ffffff;
+        }
+
+        .output {
+            color: #d3d7cf;
+            margin-left: 0;
+        }
+
+        .cursor {
+            display: inline-block;
+            width: 8px;
+            height: 18px;
+            background: #ffffff;
+            animation: blink 1s step-end infinite;
+            margin-left: 2px;
+            vertical-align: text-bottom;
+        }
+
+        @keyframes blink {
+
+            0%,
+            50% {
+                opacity: 1;
+            }
+
+            51%,
+            100% {
+                opacity: 0;
+            }
+        }
+
+        .typing {
+            border-right: 2px solid #ffffff;
+            padding-right: 2px;
+        }
+
+        .enter-prompt {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: rgba(138, 226, 52, 0.9);
+            color: #000;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(138, 226, 52, 0.4);
+            animation: pulse 2s ease-in-out infinite;
+            z-index: 1000;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        .enter-prompt.hidden {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 20px;
+                align-items: center;
+            }
+
+            .terminal-container {
+                max-width: 100%;
+            }
+
+            .terminal-header {
+                padding: 8px 10px;
+            }
+
+            .terminal-button {
+                width: 10px;
+                height: 10px;
+            }
+
+            .terminal-title {
+                font-size: 12px;
+                margin-left: 10px;
+            }
+
+            .terminal-body {
+                padding: 15px;
+            }
+
+            .line {
+                font-size: 14px;
+                line-height: 1.4;
+                word-break: break-word;
+            }
+
+            .cursor {
+                width: 6px;
+                height: 16px;
+            }
+
+            .enter-prompt {
+                bottom: 30px;
+                right: 70px;
+                padding: 10px 20px;
+                font-size: 13px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="terminal-container">
+        <div class="terminal-header">
+            <div class="terminal-button btn-close"></div>
+            <div class="terminal-button btn-minimize"></div>
+            <div class="terminal-button btn-maximize"></div>
+            <div class="terminal-title">Ubuntu</div>
+        </div>
+        <div class="terminal-body" id="terminal">
+            <!-- Nội dung sẽ được thêm vào đây -->
+        </div>
+    </div>
+
+    <div class="enter-prompt" id="enterPrompt">
+        ENTER
+    </div>
+
+    <script>
+        // ĐÂY LÀ NỘI DUNG BẠN CÓ THỂ TÙY CHỈNH
+        const lyrics = [
+            '안녕하세요! 제 이름은 [Nguyễn Hữu Ánh]입니다. 저는 베트남 하노이에서 공부하고 있는 학생입니다. 제 전공은 프로그래밍이며, 학습과 다양한 활동을 통해 스스로를 발전시키고 있습니다. 제 성격은 낙천적이고, 성실하며, 새로운 것을 배우는 것을 좋아합니다. 앞으로 많은 경험을 쌓고 제 능력을 개발하고 싶습니다. 많은 도움 부탁드립니다!',
+            'Chào cậu siudangiuu trước màn hình nha hehehehe',
+            'sa rang hề <3'
+
+        ];
+
+        const terminal = document.getElementById('terminal');
+        const enterPrompt = document.getElementById('enterPrompt');
+        let currentLineIndex = 0;
+        let currentCharIndex = 0;
+        let isTyping = false;
+
+        // Tốc độ gõ (ms)
+        const typingSpeed = 50;  // Tốc độ gõ từng ký tự
+
+        function createPrompt() {
+            return `<span class="username">-></span><span class="at">    </span><span class="hostname"></span><span class="path">~</span><span class="prompt"></span> `;
+        }
+
+        function typeCharacter() {
+            if (currentLineIndex >= lyrics.length) {
+                // Hoàn thành tất cả
+                isTyping = false;
+                enterPrompt.classList.add('hidden');
+                return;
+            }
+
+            const currentText = lyrics[currentLineIndex];
+            const lineElement = document.getElementById('current-typing-line');
+
+            if (currentCharIndex < currentText.length) {
+                // Đang gõ
+                const typedText = currentText.substring(0, currentCharIndex + 1);
+                lineElement.innerHTML = createPrompt() + `<span class="command typing">${typedText}</span>`;
+                currentCharIndex++;
+                setTimeout(typeCharacter, typingSpeed);
+            } else {
+                // Hoàn thành dòng hiện tại
+                lineElement.innerHTML = createPrompt() + `<span class="command">${currentText}</span>`;
+                lineElement.removeAttribute('id');
+                isTyping = false;
+                enterPrompt.classList.remove('hidden');
+            }
+        }
+
+        function nextLine() {
+            if (isTyping || currentLineIndex >= lyrics.length) return;
+
+            enterPrompt.classList.add('hidden');
+            currentCharIndex = 0;
+            currentLineIndex++;
+            isTyping = true;
+
+            if (currentLineIndex < lyrics.length) {
+                const lineDiv = document.createElement('div');
+                lineDiv.className = 'line';
+                lineDiv.id = 'current-typing-line';
+                terminal.appendChild(lineDiv);
+
+                // Scroll xuống dưới
+                terminal.scrollTop = terminal.scrollHeight;
+
+                typeCharacter();
+            }
+        }
+
+        // Lắng nghe phím Enter
+        // Lắng nghe phím Enter
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.keyCode === 13) {
+                nextLine();
+            }
+        });
+
+        // Lắng nghe click vào prompt
+        enterPrompt.addEventListener('click', nextLine);
+
+        // ✅ Click bất kỳ đâu trên màn hình cũng tự động Enter
+        document.body.addEventListener('click', nextLine);
+
+
+        function startTyping() {
+            if (currentLineIndex < lyrics.length) {
+                isTyping = true;
+                const lineDiv = document.createElement('div');
+                lineDiv.className = 'line';
+                lineDiv.id = 'current-typing-line';
+                terminal.appendChild(lineDiv);
+                typeCharacter();
+            }
+        }
+
+        // Ẩn prompt ban đầu
+        enterPrompt.classList.add('hidden');
+
+        // Bắt đầu dòng đầu tiên
+        setTimeout(startTyping, 500);
+    </script>
+</body>
+
+</html>

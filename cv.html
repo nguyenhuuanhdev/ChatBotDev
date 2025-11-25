@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CV</title>
+    <link rel="icon" type="img" href="img/anh.png">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            margin: 0;
+            background: #fff;
+            color: #333;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 25px 35px;
+            background: linear-gradient(to right, #f9f9f9, #ffe082);
+            border-bottom: 3px solid #ffa000;
+        }
+
+        .header-left h1 {
+            margin: 0;
+            font-size: 20px;
+        }
+
+        .header-left span.role {
+            display: inline-block;
+            margin-top: 8px;
+            background: #ffa000;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .header-contact {
+            margin-top: 10px;
+            font-size: 14px;
+        }
+
+        .header-contact span {
+            display: block;
+            margin-right: 15px;
+            font-size: 10px;
+            line-height: 1;
+
+        }
+
+        .header-right img {
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #ffa000;
+        }
+
+        .container {
+            padding: 30px 40px;
+            max-width: 800px;
+            margin: auto;
+        }
+
+        h2 {
+            color: #222;
+            border-bottom: 2px solid #ffa000;
+            padding-bottom: 5px;
+            margin-top: 30px;
+            font-size: 20px;
+        }
+
+        ul {
+            padding-left: 20px;
+            line-height: 1.6;
+            font-size: 15px;
+        }
+
+        p {
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        strong {
+            color: #222;
+        }
+
+        @media print {
+            body {
+                width: 210mm;
+                height: 297mm;
+                margin: 0 auto;
+            }
+
+            .container,
+            .header {
+                padding: 20mm;
+            }
+
+            @page {
+                size: A4;
+                margin: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="header">
+        <div class="header-left">
+            <h1>Nguyễn Hữu Ánh</h1>
+            <span class="role">IT INTERN</span>
+            <div class="header-contact">
+                <span>📞 0965 987 832</span>
+                <span>📧 nguyenhuuanhdev@gmail.com</span>
+            </div>
+        </div>
+        <div class="header-right">
+            <img src="img/24.png" alt="Ảnh đại diện">
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>I. Objective</h2>
+        <p>Seeking an IT internship position where I can apply and enhance my technical skills while contributing to the
+            success of the organization.</p>
+
+        <h2>II. Education</h2>
+        <p><strong>Bachelor of Engineering in Information Technology</strong><br>
+            Hanoi University of Business and Technology – <em>Graduated</em></p>
+        <ul>
+            <li>Relevant Coursework: Data Structures, Algorithms, Computer Networks</li>
+            <li>GPA: 4.0 / 4.0</li>
+            <li>Awards/Honors: Excellent Graduate.</li>
+        </ul>
+
+        <h2>III. Technical Skills</h2>
+        <ul>
+            <li><strong>Programming Languages:</strong> JavaScript, Python, Java, C++</li>
+            <li><strong>Operating Systems:</strong> Windows, Linux</li>
+            <li><strong>Databases:</strong> MySQL, MongoDB</li>
+            <li><strong>Web Development:</strong> HTML, CSS, JavaScript, PHP</li>
+            <li><strong>Other Tools:</strong> Git, Docker, Figma, Firebase, AWS</li>
+        </ul>
+
+        <h2>IV. Projects</h2>
+        <ul>
+            <li><strong>Weather App:</strong> Real-time weather app using OpenWeather API with modern cloud effects.
+            </li>
+            <li><strong>Flappy Bird Clone:</strong> A Flappy Bird-style game built with HTML, CSS & JavaScript using
+                Canvas, optimized for desktop and mobile play.</li>
+            <li><strong>Chatbot:</strong> Personal assistant chatbot with Node.js backend and popup UI frontend.
+            </li>
+            <li><strong>Translation App:</strong> Multi-language translator with voice reading and history saving.</li>
+        </ul>
+
+        <h2>V. Languages</h2>
+        <ul>
+            <li>Vietnamese: Native</li>
+        </ul>
+
+        <h2>VI. Interests</h2>
+        <ul>
+            <li>Building funny apps, creating memes, chatbot AI</li>
+            <li>Watching tech YouTube & debugging with lofi ☕</li>
+            <li>Jogging, traveling & gaming</li>
+        </ul>
+    </div>
+
+</body>
+
+</html>

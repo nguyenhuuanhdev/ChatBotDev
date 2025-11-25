@@ -1,0 +1,105 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Meme</title>
+    <link rel="stylesheet" href="meme.css" />
+    <link rel="icon" type="img" href="img/anh.png">
+
+<body>
+    <video autoplay muted loop playsinline id="bgVideo">
+        <source src="img/meme1.mp4" type="video/mp4" />
+
+    </video>
+
+
+</body>
+
+</html> -->
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Meme</title>
+    <link rel="stylesheet" href="meme.css" />
+    <link rel="icon" type="image/png" href="img/anh.png">
+    <style>
+        #intro {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: rgba(0, 0, 0, 0.9);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 20;
+        }
+
+        #intro button {
+            padding: 10px 20px;
+            margin-top: 20px;
+            font-size: 18px;
+            background-color: #0f0;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        #bgVideo {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Intro hỏi người dùng -->
+    <div id="intro">
+        <h2>Bạn có muốn tiếp tục không?</h2>
+        <button id="startBtn">Có</button>
+    </div>
+
+    <!-- Video nền -->
+    <video autoplay muted loop playsinline id="bgVideo">
+        <source src="img/Phepmautiktok.mp4" type="video/mp4" />
+    </video>
+
+    <!-- <img id="bgImage" src="img/bgr.png" alt="Background" style="width: 100%; height: auto;"> -->
+
+
+    <!-- Âm thanh -->
+    <audio id="sound" src="img/Phepmautiktok.mp4" loop></audio>
+
+    <script>
+        const startBtn = document.getElementById('startBtn');
+        const intro = document.getElementById('intro');
+        const video = document.getElementById('bgVideo');
+        const sound = document.getElementById('sound');
+
+        startBtn.addEventListener('click', () => {
+            // Ẩn intro
+            intro.style.display = 'none';
+
+            // Hiện video
+            video.style.display = 'block';
+
+            // Phát âm thanh
+            sound.play();
+
+            // Bật tiếng cho video nếu muốn (tuỳ)
+            // video.muted = false;
+            // video.play();
+        });
+    </script>
+</body>
+
+</html>

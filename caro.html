@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover">
+    <title>Caro AI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+    <link rel="icon" type="img" href="img/anh.png">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            height: 100%;
+            min-height: 100dvh;
+            /* Dùng chiều cao động cho điện thoại */
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100dvh;
+            /* ✅ full chiều cao */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            /* ✅ căn giữa cả chiều dọc và ngang */
+            padding: 10px;
+            margin: 0;
+            overflow: hidden;
+
+        }
+
+
+
+        .game-container {
+            background: rgba(255, 255, 255, 0.98);
+            /* ✅ TĂNG ĐỘ RÕ NỀN TRẮNG */
+
+            border-radius: 20px;
+            padding: 15px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            width: 100%;
+            max-width: 650px;
+            box-sizing: border-box;
+            margin: auto;
+            max-height: 95vh;
+            overflow-y: auto;
+
+
+        }
+
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 15px;
+            font-size: clamp(1.5rem, 4vw, 2.5rem);
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .game-info {
+            text-align: center;
+            margin-bottom: 15px;
+            font-size: clamp(1rem, 3vw, 1.2rem);
+            color: #555;
+        }
+
+        .board {
+            display: grid;
+            grid-template-columns: repeat(15, 1fr);
+            grid-template-rows: repeat(15, 1fr);
+            gap: 1px;
+            background: #ddd;
+            border: 2px solid #333;
+            border-radius: 8px;
+            overflow: hidden;
+            margin: 0 auto 15px auto;
+            width: 100%;
+            max-width: 500px;
+            aspect-ratio: 1;
+            touch-action: manipulation;
+        }
+
+        .cell {
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: clamp(0.6rem, 2.5vw, 1.2rem);
+            font-weight: bold;
+            transition: all 0.15s ease;
+            position: relative;
+            min-height: 0;
+            user-select: none;
+            -webkit-user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .cell:hover {
+            background: #f0f0f0;
+        }
+
+        .cell:active {
+            background: #e0e0e0;
+            transform: scale(0.95);
+        }
+
+        .cell.x {
+            color: #e74c3c;
+            background: #ffebee;
+        }
+
+        .cell.o {
+            color: #3498db;
+            background: #e3f2fd;
+        }
+
+        .cell.winning {
+            background: #4caf50 !important;
+            color: white;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .controls {
+            text-align: center;
+            margin: 15px 0;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: clamp(8px, 2vw, 12px) clamp(16px, 4vw, 24px);
+            font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            white-space: nowrap;
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .difficulty-selector {
+            margin-bottom: 15px;
+            text-align: center;
+            font-size: clamp(0.9rem, 2.5vw, 1rem);
+        }
+
+        select {
+            padding: clamp(6px, 2vw, 8px) clamp(12px, 3vw, 16px);
+            font-size: clamp(0.9rem, 2.5vw, 1rem);
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            background: white;
+            margin-left: 8px;
+            -webkit-appearance: none;
+            appearance: none;
+        }
+
+        .score {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 8px;
+            margin-top: 15px;
+            text-align: center;
+        }
+
+        .score-item {
+            background: rgba(255, 255, 255, 0.8);
+            padding: clamp(8px, 2vw, 12px);
+            border-radius: 8px;
+            border: 2px solid #ddd;
+        }
+
+        .score-label {
+            font-size: clamp(0.8rem, 2vw, 0.9rem);
+            color: #666;
+            margin-bottom: 4px;
+        }
+
+        .score-value {
+            font-size: clamp(1.2rem, 4vw, 1.5rem);
+            font-weight: bold;
+            color: #333;
+        }
+
+        .thinking {
+            color: #f39c12;
+            font-style: italic;
+        }
+
+        /* Responsive cho tablet */
+        @media screen and (max-width: 1024px) and (orientation: landscape) {
+            .game-container {
+                max-width: 90vw;
+                padding: 10px;
+            }
+
+            .board {
+                max-width: 60vh;
+            }
+        }
+
+        /* Responsive cho điện thoại */
+        @media screen and (max-width: 768px) {
+            body {
+                padding: 2px;
+                justify-content: flex-start;
+                padding-top: env(safe-area-inset-top, 10px);
+                padding-bottom: env(safe-area-inset-bottom, 10px);
+            }
+
+            .game-container {
+                padding: 10px;
+                border-radius: 15px;
+                margin: 2px;
+                width: calc(100% - 4px);
+            }
+
+            .board {
+                max-width: min(95vw, 95vh);
+            }
+
+            .controls {
+                gap: 8px;
+            }
+        }
+
+        /* Responsive cho iPhone và điện thoại nhỏ */
+        @media screen and (max-width: 480px) {
+            body {
+                min-height: 100vh;
+                min-height: -webkit-fill-available;
+            }
+
+            .game-container {
+                padding: 8px;
+                border-radius: 12px;
+            }
+
+            .board {
+                max-width: min(92vw, 85vh);
+                gap: 0.5px;
+            }
+
+            .score {
+                gap: 6px;
+            }
+        }
+
+        /* Responsive cho màn hình rất nhỏ */
+        @media screen and (max-width: 360px) {
+            .controls {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            button {
+                width: 100%;
+                max-width: 200px;
+            }
+        }
+
+        /* Xử lý zoom */
+        @media screen and (min-resolution: 2dppx) {
+            .board {
+                image-rendering: -webkit-optimize-contrast;
+                image-rendering: crisp-edges;
+            }
+        }
+
+        /* Safari iOS fixes */
+        @supports (-webkit-touch-callout: none) {
+            body {
+                min-height: -webkit-fill-available;
+            }
+
+            .cell {
+                -webkit-touch-callout: none;
+                -webkit-user-select: none;
+            }
+        }
+
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+            font-size: 1.2em;
+            margin-right: 4px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="game-container">
+        <h1>Cờ Caro AI 🎯</h1>
+
+        <div class="difficulty-selector">
+            <label for="difficulty">Độ khó:</label>
+            <select id="difficulty">
+                <option value="easy">Dễ</option>
+                <option value="medium" selected>Trung bình</option>
+                <option value="hard">Khó</option>
+                <option value="expert">Chuyên gia</option>
+            </select>
+        </div>
+
+        <div class="game-info" id="gameInfo">Lượt của bạn ❌ - Màu đỏ</div>
+
+        <div class="board" id="board"></div>
+
+        <div class="controls">
+            <button onclick="resetGame()"><span class="material-symbols-outlined">restart_alt</span> Chơi lại</button>
+            <button onclick="undoMove()"><span class="material-symbols-outlined">undo</span> Hoàn tác</button>
+        </div>
+
+        <div class="score">
+            <div class="score-item">
+                <div class="score-label">Người chơi</div>
+                <div class="score-value" id="playerScore">0</div>
+            </div>
+            <div class="score-item">
+                <div class="score-label">Hòa</div>
+                <div class="score-value" id="drawScore">0</div>
+            </div>
+            <div class="score-item">
+                <div class="score-label">AI</div>
+                <div class="score-value" id="aiScore">0</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        class TicTacToeAI {
+            constructor() {
+                this.board = Array(15).fill().map(() => Array(15).fill(''));
+                this.currentPlayer = 'X';
+                this.gameActive = true;
+                this.moveHistory = [];
+                this.scores = { player: 0, ai: 0, draw: 0 };
+                this.difficulty = 'medium';
+                this.initBoard();
+                this.loadScores();
+            }
+
+            initBoard() {
+                const boardElement = document.getElementById('board');
+                boardElement.innerHTML = '';
+
+                for (let i = 0; i < 15; i++) {
+                    for (let j = 0; j < 15; j++) {
+                        const cell = document.createElement('div');
+                        cell.className = 'cell';
+                        cell.dataset.row = i;
+                        cell.dataset.col = j;
+                        cell.addEventListener('click', () => this.makeMove(i, j));
+                        boardElement.appendChild(cell);
+                    }
+                }
+            }
+
+            makeMove(row, col) {
+                if (!this.gameActive || this.board[row][col] !== '' || this.currentPlayer !== 'X') {
+                    return;
+                }
+
+                this.board[row][col] = 'X';
+                this.moveHistory.push({ row, col, player: 'X' });
+                this.updateDisplay();
+
+                if (this.checkWin(row, col)) {
+                    this.endGame('Bạn thắng! 🎉');
+                    this.scores.player++;
+                    this.saveScores();
+                    return;
+                }
+
+                if (this.isBoardFull()) {
+                    this.endGame('Hòa! 🤝');
+                    this.scores.draw++;
+                    this.saveScores();
+                    return;
+                }
+
+                this.currentPlayer = 'O';
+                this.updateGameInfo('AI đang suy nghĩ... 🤔', true);
+
+                setTimeout(() => {
+                    this.makeAIMove();
+                }, 500);
+            }
+
+            makeAIMove() {
+                const move = this.getBestMove();
+                if (move) {
+                    this.board[move.row][move.col] = 'O';
+                    this.moveHistory.push({ row: move.row, col: move.col, player: 'O' });
+                    this.updateDisplay();
+
+                    if (this.checkWin(move.row, move.col)) {
+                        this.endGame('AI thắng! 🤖');
+                        this.scores.ai++;
+                        this.saveScores();
+                        return;
+                    }
+
+                    if (this.isBoardFull()) {
+                        this.endGame('Hòa! 🤝');
+                        this.scores.draw++;
+                        this.saveScores();
+                        return;
+                    }
+
+                    this.currentPlayer = 'X';
+                    this.updateGameInfo('Lượt của bạn ❌ - Màu đỏ');
+                }
+            }
+
+            getBestMove() {
+                const difficulty = document.getElementById('difficulty').value;
+
+                // Kiểm tra nước thắng trực tiếp
+                for (let i = 0; i < 15; i++) {
+                    for (let j = 0; j < 15; j++) {
+                        if (this.board[i][j] === '') {
+                            this.board[i][j] = 'O';
+                            if (this.checkWin(i, j)) {
+                                this.board[i][j] = '';
+                                return { row: i, col: j };
+                            }
+                            this.board[i][j] = '';
+                        }
+                    }
+                }
+
+                // Kiểm tra chặn người chơi thắng
+                for (let i = 0; i < 15; i++) {
+                    for (let j = 0; j < 15; j++) {
+                        if (this.board[i][j] === '') {
+                            this.board[i][j] = 'X';
+                            if (this.checkWin(i, j)) {
+                                this.board[i][j] = '';
+                                return { row: i, col: j };
+                            }
+                            this.board[i][j] = '';
+                        }
+                    }
+                }
+
+                if (difficulty === 'easy') {
+                    return this.getRandomMove();
+                } else if (difficulty === 'medium') {
+                    return this.getMediumMove();
+                } else {
+                    return this.getExpertMove();
+                }
+            }
+
+            getRandomMove() {
+                const emptyCells = [];
+                for (let i = 0; i < 15; i++) {
+                    for (let j = 0; j < 15; j++) {
+                        if (this.board[i][j] === '') {
+                            emptyCells.push({ row: i, col: j });
+                        }
+                    }
+                }
+                return emptyCells[Math.floor(Math.random() * emptyCells.length)];
+            }
+
+            getMediumMove() {
+                let bestMove = null;
+                let bestScore = -Infinity;
+
+                for (let i = 0; i < 15; i++) {
+                    for (let j = 0; j < 15; j++) {
+                        if (this.board[i][j] === '') {
+                            let score = this.evaluatePosition(i, j, 'O');
+                            score -= this.evaluatePosition(i, j, 'X') * 0.8;
+
+                            if (score > bestScore) {
+                                bestScore = score;
+                                bestMove = { row: i, col: j };
+                            }
+                        }
+                    }
+                }
+
+                return bestMove || this.getRandomMove();
+            }
+
+            getExpertMove() {
+                let bestMove = null;
+                let bestScore = -Infinity;
+
+                for (let i = 0; i < 15; i++) {
+                    for (let j = 0; j < 15; j++) {
+                        if (this.board[i][j] === '') {
+                            let score = 0;
+
+                            // Đánh giá vị trí tấn công
+                            score += this.evaluatePosition(i, j, 'O') * 1.2;
+
+                            // Đánh giá vị trí phòng thủ
+                            score += this.evaluatePosition(i, j, 'X');
+
+                            // Ưu tiên vị trí trung tâm
+                            const centerDistance = Math.abs(i - 7) + Math.abs(j - 7);
+                            score += (14 - centerDistance) * 0.1;
+
+                            // Ưu tiên vị trí gần các quân đã đặt
+                            score += this.getNeighborScore(i, j) * 0.5;
+
+                            if (score > bestScore) {
+                                bestScore = score;
+                                bestMove = { row: i, col: j };
+                            }
+                        }
+                    }
+                }
+
+                return bestMove || this.getRandomMove();
+            }
+
+            evaluatePosition(row, col, player) {
+                let score = 0;
+                const directions = [
+                    [0, 1], [1, 0], [1, 1], [1, -1]
+                ];
+
+                for (let [dx, dy] of directions) {
+                    let count = 1;
+                    let blocked = 0;
+
+                    // Kiểm tra một hướng
+                    for (let i = 1; i < 5; i++) {
+                        const newRow = row + dx * i;
+                        const newCol = col + dy * i;
+
+                        if (newRow < 0 || newRow >= 15 || newCol < 0 || newCol >= 15) {
+                            blocked++;
+                            break;
+                        }
+
+                        if (this.board[newRow][newCol] === player) {
+                            count++;
+                        } else if (this.board[newRow][newCol] !== '') {
+                            blocked++;
+                            break;
+                        } else {
+                            break;
+                        }
+                    }
+
+                    // Kiểm tra hướng ngược lại
+                    for (let i = 1; i < 5; i++) {
+                        const newRow = row - dx * i;
+                        const newCol = col - dy * i;
+
+                        if (newRow < 0 || newRow >= 15 || newCol < 0 || newCol >= 15) {
+                            blocked++;
+                            break;
+                        }
+
+                        if (this.board[newRow][newCol] === player) {
+                            count++;
+                        } else if (this.board[newRow][newCol] !== '') {
+                            blocked++;
+                            break;
+                        } else {
+                            break;
+                        }
+                    }
+
+                    // Tính điểm dựa trên số quân liên tiếp và bị chặn
+                    if (count >= 5) {
+                        score += 1000;
+                    } else if (count === 4) {
+                        score += blocked === 0 ? 100 : 10;
+                    } else if (count === 3) {
+                        score += blocked === 0 ? 10 : 3;
+                    } else if (count === 2) {
+                        score += blocked === 0 ? 3 : 1;
+                    }
+                }
+
+                return score;
+            }
+
+            getNeighborScore(row, col) {
+                let score = 0;
+                for (let i = -1; i <= 1; i++) {
+                    for (let j = -1; j <= 1; j++) {
+                        if (i === 0 && j === 0) continue;
+                        const newRow = row + i;
+                        const newCol = col + j;
+                        if (newRow >= 0 && newRow < 15 && newCol >= 0 && newCol < 15) {
+                            if (this.board[newRow][newCol] !== '') {
+                                score += 1;
+                            }
+                        }
+                    }
+                }
+                return score;
+            }
+
+            checkWin(row, col) {
+                const player = this.board[row][col];
+                const directions = [
+                    [0, 1], [1, 0], [1, 1], [1, -1]
+                ];
+
+                for (let [dx, dy] of directions) {
+                    let count = 1;
+                    const winningCells = [{ row, col }];
+
+                    // Kiểm tra một hướng
+                    for (let i = 1; i < 5; i++) {
+                        const newRow = row + dx * i;
+                        const newCol = col + dy * i;
+
+                        if (newRow >= 0 && newRow < 15 && newCol >= 0 && newCol < 15 &&
+                            this.board[newRow][newCol] === player) {
+                            count++;
+                            winningCells.push({ row: newRow, col: newCol });
+                        } else {
+                            break;
+                        }
+                    }
+
+                    // Kiểm tra hướng ngược lại
+                    for (let i = 1; i < 5; i++) {
+                        const newRow = row - dx * i;
+                        const newCol = col - dy * i;
+
+                        if (newRow >= 0 && newRow < 15 && newCol >= 0 && newCol < 15 &&
+                            this.board[newRow][newCol] === player) {
+                            count++;
+                            winningCells.unshift({ row: newRow, col: newCol });
+                        } else {
+                            break;
+                        }
+                    }
+
+                    if (count >= 5) {
+                        this.highlightWinningCells(winningCells);
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+
+            highlightWinningCells(cells) {
+                cells.forEach(cell => {
+                    const cellElement = document.querySelector(`[data-row="${cell.row}"][data-col="${cell.col}"]`);
+                    cellElement.classList.add('winning');
+                });
+            }
+
+            isBoardFull() {
+                return this.board.every(row => row.every(cell => cell !== ''));
+            }
+
+            updateDisplay() {
+                for (let i = 0; i < 15; i++) {
+                    for (let j = 0; j < 15; j++) {
+                        const cell = document.querySelector(`[data-row="${i}"][data-col="${j}"]`);
+                        const value = this.board[i][j];
+                        cell.textContent = value;
+                        cell.className = 'cell';
+                        if (value) {
+                            cell.classList.add(value.toLowerCase());
+                        }
+                    }
+                }
+                this.updateScoreDisplay();
+            }
+
+            updateGameInfo(message, isThinking = false) {
+                const info = document.getElementById('gameInfo');
+                info.textContent = message;
+                info.className = isThinking ? 'game-info thinking' : 'game-info';
+            }
+
+            endGame(message) {
+                this.gameActive = false;
+                this.updateGameInfo(message);
+            }
+
+            resetGame() {
+                this.board = Array(15).fill().map(() => Array(15).fill(''));
+                this.currentPlayer = 'X';
+                this.gameActive = true;
+                this.moveHistory = [];
+                this.updateDisplay();
+                this.updateGameInfo('Lượt của bạn (X) - Màu đỏ');
+            }
+
+            undoMove() {
+                if (this.moveHistory.length >= 2 && this.gameActive) {
+                    // Hoàn tác nước đi của AI
+                    const aiMove = this.moveHistory.pop();
+                    this.board[aiMove.row][aiMove.col] = '';
+
+                    // Hoàn tác nước đi của người chơi
+                    const playerMove = this.moveHistory.pop();
+                    this.board[playerMove.row][playerMove.col] = '';
+
+                    this.currentPlayer = 'X';
+                    this.updateDisplay();
+                    this.updateGameInfo('Lượt của bạn (X) - Màu đỏ');
+                }
+            }
+
+            updateScoreDisplay() {
+                document.getElementById('playerScore').textContent = this.scores.player;
+                document.getElementById('aiScore').textContent = this.scores.ai;
+                document.getElementById('drawScore').textContent = this.scores.draw;
+            }
+
+            saveScores() {
+                const scores = JSON.stringify(this.scores);
+                document.cookie = `ticTacToeScores=${scores}; expires=${new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toUTCString()}; path=/`;
+            }
+
+            loadScores() {
+                const cookies = document.cookie.split(';');
+                const scoreCookie = cookies.find(cookie => cookie.trim().startsWith('ticTacToeScores='));
+                if (scoreCookie) {
+                    try {
+                        const scores = JSON.parse(scoreCookie.split('=')[1]);
+                        this.scores = { ...this.scores, ...scores };
+                    } catch (e) {
+                        console.log('Không thể tải điểm số');
+                    }
+                }
+                this.updateScoreDisplay();
+            }
+        }
+
+        let game;
+
+        function resetGame() {
+            game.resetGame();
+        }
+
+        function undoMove() {
+            game.undoMove();
+        }
+
+        // Khởi tạo game khi trang web được tải
+        window.addEventListener('load', () => {
+            game = new TicTacToeAI();
+        });
+    </script>
+</body>
+
+</html>

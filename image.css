@@ -1,0 +1,155 @@
+.gift-container {
+    display: none;
+    margin-top: 20px;
+    animation: giftSlideIn 0.8s ease;
+}
+
+@keyframes giftSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(30px) scale(0.9);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.gift-box {
+    background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 50%, #fecfef 100%);
+    border-radius: 15px;
+    padding: 25px;
+    position: relative;
+    overflow: hidden;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.gift-box::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    animation: shimmer 3s infinite;
+}
+
+@keyframes shimmer {
+    0% {
+        transform: translateX(-100%) translateY(-100%) rotate(30deg);
+    }
+
+    100% {
+        transform: translateX(100%) translateY(100%) rotate(30deg);
+    }
+}
+
+.gift-header {
+    font-size: 1.5rem;
+    color: #fff;
+    font-weight: bold;
+    margin-bottom: 15px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.gift-message {
+    font-size: 1rem;
+    color: #fff;
+    margin-bottom: 20px;
+    line-height: 1.5;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.gift-image-container {
+    background: white;
+    border-radius: 12px;
+    padding: 10px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+    margin-bottom: 15px;
+}
+
+.gift-image {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.gift-type {
+    background: rgba(255, 255, 255, 0.9);
+    color: #667eea;
+    padding: 6px 15px;
+    border-radius: 15px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    display: inline-block;
+    margin-top: 10px;
+}
+
+.confetti {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+}
+
+.new-gift-btn {
+    background: linear-gradient(135deg, #28a745, #20c997);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 10px 20px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 15px;
+}
+
+.new-gift-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+    .container {
+        margin: 20px;
+        padding: 30px 25px;
+    }
+
+    .header h1 {
+        font-size: 1.7rem;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .container {
+        padding: 30px 20px;
+    }
+
+    .gift-message {
+        font-size: 0.95rem;
+    }
+
+    .gift-image {
+        height: 130px;
+    }
+}
+
+@media screen and (max-width: 375px) {
+    .gift-header {
+        font-size: 1.1rem;
+    }
+
+    .gift-type {
+        font-size: 0.8rem;
+    }
+
+    .new-gift-btn {
+        font-size: 0.85rem;
+        padding: 8px 16px;
+    }
+}

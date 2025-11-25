@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather</title>
+    <link rel="stylesheet" href="weather.css">
+    <link rel="icon" type="img" href="img/anh.png">
+</head>
+
+<body>
+    <div class="background"></div>
+    <div class="sun"></div>
+    <div class="cloud cloud1"></div>
+    <div class="cloud cloud2"></div>
+    <div class="cloud cloud3"></div>
+    <div class="floating-shapes">
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <h1>Weather Pro</h1>
+            <p>Nếu trời trở lạnh thì nhớ mặc ấm vào đó nha 🧣.</p>
+        </div>
+
+        <div class="search-container">
+            <div class="search-box">
+                <input type="text" class="search-input" placeholder="Nhập tên thành phố..." id="cityInput">
+                <button class="search-btn" onclick="getWeather()">Tìm kiếm</button>
+            </div>
+        </div>
+
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>Đang tải thông tin thời tiết...</p>
+        </div>
+
+        <div class="weather-card" id="weatherCard" style="display: none;">
+            <div class="location" id="location"></div>
+            <div class="main-weather">
+                <div class="temperature" id="temperature"></div>
+                <div class="weather-icon" id="weatherIcon"></div>
+            </div>
+            <div class="weather-description" id="description"></div>
+
+            <div class="weather-details">
+                <div class="detail-item">
+                    <div class="detail-label">Cảm giác như</div>
+                    <div class="detail-value" id="feelsLike"></div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Độ ẩm</div>
+                    <div class="detail-value" id="humidity"></div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Tốc độ gió</div>
+                    <div class="detail-value" id="windSpeed"></div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Áp suất</div>
+                    <div class="detail-value" id="pressure"></div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Tầm nhìn</div>
+                    <div class="detail-value" id="visibility"></div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">UV Index</div>
+                    <div class="detail-value" id="uvIndex"></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="error"></div>
+    </div>
+
+    <script src="weather.js"></script>
+</body>
+
+</html>
