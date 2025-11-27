@@ -26,7 +26,68 @@ const userData = {
         mime_type: null
     }
 };
+// cơn mưa icon
+let currentIcon = '🥷';
 
+function createHeart() {
+    const heart = document.createElement('div');
+    heart.classList.add('heart');
+    heart.innerText = currentIcon;
+    heart.style.left = Math.random() * 100 + 'vw';
+    heart.style.animationDuration = (2 + Math.random() * 3) + 's';
+    document.body.appendChild(heart);
+
+    setTimeout(() => heart.remove(), 5000);
+}
+
+let intervalId = null;
+
+function startHeartRainSequence() {
+    const speedTimeline = [
+        { time: 0, delay: 1 },
+        { time: 5000, delay: 100 },
+        { time: 5000, delay: 100 },
+        { time: 5000, delay: 100 },
+        { time: 10000, delay: 200 },
+        { time: 12000, delay: 300 },
+        { time: 13000, delay: 500 },
+        { time: 14000, delay: 600 },
+        { time: 15000, delay: 700 },
+        { time: 16000, delay: 900 },
+    ];
+
+    function setRainDelay(delay) {
+        if (intervalId) clearInterval(intervalId);
+        intervalId = setInterval(createHeart, delay);
+    }
+
+    speedTimeline.forEach(step => {
+        setTimeout(() => {
+            setRainDelay(step.delay);
+        }, step.time);
+    });
+
+    setRainDelay(speedTimeline[0].delay);
+}
+
+// Hàm kiểm tra thời gian để đổi icon
+function updateIconByTime() {
+    const hour = new Date().getHours();
+    if (hour >= 22 || hour < 8) {
+        currentIcon = '🫂';
+    } else {
+        currentIcon = '🥺';
+    }
+}
+
+// Kiểm tra mỗi phút
+setInterval(updateIconByTime, 60 * 1000);
+
+// Gọi ngay khi load
+updateIconByTime();
+
+// Bắt đầu mưa
+startHeartRainSequence();
 // test ảnh ẩn hiện
 let isDefault = true; // trạng thái ảnh hiện tại
 const img = document.getElementById('swap-icon'); // <--- đây là cái thiếu
@@ -714,67 +775,7 @@ document.getElementById('music-toggle').addEventListener('click', () => {
 
 
 
-let currentIcon = '🥷';
 
-function createHeart() {
-    const heart = document.createElement('div');
-    heart.classList.add('heart');
-    heart.innerText = currentIcon;
-    heart.style.left = Math.random() * 100 + 'vw';
-    heart.style.animationDuration = (2 + Math.random() * 3) + 's';
-    document.body.appendChild(heart);
-
-    setTimeout(() => heart.remove(), 5000);
-}
-
-let intervalId = null;
-
-function startHeartRainSequence() {
-    const speedTimeline = [
-        { time: 0, delay: 1 },
-        { time: 5000, delay: 100 },
-        { time: 5000, delay: 100 },
-        { time: 5000, delay: 100 },
-        { time: 10000, delay: 200 },
-        { time: 12000, delay: 300 },
-        { time: 13000, delay: 500 },
-        { time: 14000, delay: 600 },
-        { time: 15000, delay: 700 },
-        { time: 16000, delay: 900 },
-    ];
-
-    function setRainDelay(delay) {
-        if (intervalId) clearInterval(intervalId);
-        intervalId = setInterval(createHeart, delay);
-    }
-
-    speedTimeline.forEach(step => {
-        setTimeout(() => {
-            setRainDelay(step.delay);
-        }, step.time);
-    });
-
-    setRainDelay(speedTimeline[0].delay);
-}
-
-// Hàm kiểm tra thời gian để đổi icon
-function updateIconByTime() {
-    const hour = new Date().getHours();
-    if (hour >= 22 || hour < 8) {
-        currentIcon = '🫂';
-    } else {
-        currentIcon = '🐷';
-    }
-}
-
-// Kiểm tra mỗi phút
-setInterval(updateIconByTime, 60 * 1000);
-
-// Gọi ngay khi load
-updateIconByTime();
-
-// Bắt đầu mưa
-startHeartRainSequence();
 
 
 
