@@ -118,6 +118,59 @@ body {
     display: none;
 }
 
+
+
+/* test form test */
+.test1 {
+    position: fixed;
+    bottom: 205px;
+    /* right: calc(50% - 80px); */
+    /* 30px là nửa width */
+    /* transform: none; */
+    right: 35px;
+    background: linear-gradient(135deg, #fbc2eb 0%, #a6c1ee 100%);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    font-size: 1.8rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    cursor: pointer;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    z-index: 1000;
+    animation: pulse-glow 1.8s infinite ease-in-out;
+}
+
+.test2 {
+    position: fixed;
+    /* bottom: 545px; */
+    bottom: 375px;
+    /* display: flex;
+    justify-content: space-between; */
+    /* right: 35px; */
+    right: 120px;
+    width: 60px;
+    height: 60px;
+    border: none;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #6bffb2 0%, #5ac7ee 100%);
+    color: white;
+    font-size: 1.8rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+    z-index: 1000;
+    animation: pulse-glow 1.8s infinite ease-in-out;
+
+}
+
+
 /* chuyen doi dang */
 .chuyendoi {
     position: fixed;
@@ -2248,7 +2301,7 @@ body.show-chatbot .chatbot-popup {
 }
 
 @media (max-width: 768px) {
-    #contactBtn {
+    .test1 {
         position: fixed;
         bottom: 100px;
         right: 20px;
@@ -2267,5 +2320,31 @@ body.show-chatbot .chatbot-popup {
         box-shadow: 0 0 15px rgba(255, 0, 0, 0.6);
         animation: pulse-glow-strong 1.6s infinite ease-in-out;
         transition: all 0.3s ease;
+    }
+
+    .test2 {
+        position: fixed;
+        bottom: 100px;
+        /* left: calc(50% - 30px);  nếu về 3 mục*/
+        /* /* 30px là nửa width  */
+        /* transform: none; */
+        /* left: 80pt; */
+        right: 30%;
+        transform: translateX(-50%);
+        width: 60px;
+        height: 60px;
+        background: linear-gradient(135deg, #6bffb2 0%, #5ac7ee 100%);
+        color: white;
+        font-size: 32px;
+        border: none;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 0 15px rgba(0, 174, 255, 0.6);
+        cursor: pointer;
+        z-index: 1;
+        transition: all 0.3s ease;
+        animation: pulse-glow-strong 1.6s infinite ease-in-out;
     }
 }

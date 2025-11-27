@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dino Game</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: #e8e8e8;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .game-container {
+            width: 100%;
+            max-width: 1200px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .game-header {
+            background: #6b6b6b;
+            color: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .score-display {
+            font-size: 18px;
+            letter-spacing: 2px;
+            display: flex;
+            gap: 20px;
+        }
+
+        .game-canvas {
+            position: relative;
+            width: 100%;
+            height: 400px;
+            background: #ebebeb;
+            border-bottom: 3px solid #6b6b6b;
+            overflow: hidden;
+        }
+
+        .game-over-screen {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            z-index: 10;
+            display: none;
+        }
+
+        .game-over-screen.show {
+            display: block;
+        }
+
+        .game-over-text {
+            font-size: 48px;
+            color: #6b6b6b;
+            letter-spacing: 8px;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .restart-button {
+            width: 60px;
+            height: 60px;
+            background: #6b6b6b;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+            transition: all 0.3s;
+        }
+
+        .restart-button:hover {
+            background: #555555;
+            transform: scale(1.1);
+        }
+
+        .restart-icon {
+            width: 30px;
+            height: 30px;
+            border: 3px solid white;
+            border-radius: 50%;
+            position: relative;
+        }
+
+        .restart-icon::after {
+            content: '';
+            position: absolute;
+            top: -8px;
+            right: -2px;
+            width: 0;
+            height: 0;
+            border-left: 8px solid white;
+            border-top: 5px solid transparent;
+            border-bottom: 5px solid transparent;
+        }
+
+        .ground {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 200%;
+            height: 3px;
+            background: #6b6b6b;
+        }
+
+        .ground.running {
+            animation: groundMove 4.5s linear infinite;
+        }
+
+        .ground-pattern {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 200%;
+            height: 12px;
+            background: repeating-linear-gradient(90deg,
+                    #6b6b6b 0px,
+                    #6b6b6b 2px,
+                    transparent 2px,
+                    transparent 10px);
+        }
+
+        .ground-pattern.running {
+            animation: groundMove 4.5s linear infinite;
+        }
+
+        @keyframes groundMove {
+            from {
+                transform: translateX(0);
+            }
+
+            to {
+                transform: translateX(-50%);
+            }
+        }
+
+        .dino {
+            position: absolute;
+            bottom: 15px;
+            left: 50px;
+            width: 55px;
+            height: 40px;
+            z-index: 5;
+        }
+
+        .dino.jump {
+            animation: jump 1.2s cubic-bezier(0.25, 0, 0.1, 1);
+        }
+
+        @keyframes jump {
+            0% {
+                bottom: 15px;
+            }
+
+            25% {
+                bottom: 220px;
+            }
+
+            100% {
+                bottom: 15px;
+            }
+        }
+
+        .dino svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .cloud {
+            position: absolute;
+            width: 60px;
+            height: 25px;
+            background: #c5c5c5;
+            border-radius: 50px;
+            opacity: 0;
+        }
+
+        .cloud.active {
+            opacity: 1;
+            animation: cloudMove 20s linear infinite;
+        }
+
+        .cloud::before,
+        .cloud::after {
+            content: '';
+            position: absolute;
+            background: #c5c5c5;
+            border-radius: 50%;
+        }
+
+        .cloud::before {
+            width: 30px;
+            height: 30px;
+            top: -15px;
+            left: 10px;
+        }
+
+        .cloud::after {
+            width: 35px;
+            height: 35px;
+            top: -18px;
+            right: 10px;
+        }
+
+        @keyframes cloudMove {
+            from {
+                transform: translateX(0);
+            }
+
+            to {
+                transform: translateX(-150vw);
+            }
+        }
+
+        .obstacle {
+            position: absolute;
+            bottom: 15px;
+            right: -60px;
+            z-index: 4;
+        }
+
+        .obstacle.active {
+            animation: obstacleMove 4s linear;
+        }
+
+        @keyframes obstacleMove {
+            from {
+                right: -60px;
+            }
+
+            to {
+                right: 100%;
+            }
+        }
+
+        .obstacle svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .game-controls {
+            padding: 30px;
+            background: #f0f0f0;
+            text-align: center;
+        }
+
+        .control-info {
+            color: #6b6b6b;
+            font-size: 16px;
+            margin-bottom: 15px;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .game-button {
+            padding: 12px 40px;
+            background: #6b6b6b;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'Courier New', monospace;
+        }
+
+        .game-button:hover {
+            background: #555555;
+            transform: translateY(-2px);
+        }
+
+        .game-button:active {
+            transform: translateY(0);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .game-header {
+                padding: 12px 20px;
+            }
+
+            .score-display {
+                font-size: 14px;
+                gap: 15px;
+            }
+
+            .game-canvas {
+                height: 300px;
+            }
+
+            .game-over-text {
+                font-size: 32px;
+                letter-spacing: 4px;
+            }
+
+            .restart-button {
+                width: 50px;
+                height: 50px;
+            }
+
+            .restart-icon {
+                width: 25px;
+                height: 25px;
+            }
+
+            .dino {
+                bottom: 12px;
+                left: 30px;
+                width: 48px;
+                height: 35px;
+            }
+
+            @keyframes jump {
+                0% {
+                    bottom: 12px;
+                }
+
+                40% {
+                    bottom: 180px;
+                }
+
+                100% {
+                    bottom: 12px;
+                }
+            }
+
+            .obstacle {
+                bottom: 12px;
+            }
+
+            .obstacle svg {
+                width: 100%;
+                height: 100%;
+            }
+
+            .game-controls {
+                padding: 20px;
+            }
+
+            .control-info {
+                font-size: 14px;
+            }
+
+            .button-group {
+                gap: 10px;
+            }
+
+            .game-button {
+                padding: 10px 25px;
+                font-size: 14px;
+            }
+
+            .cloud {
+                width: 50px;
+                height: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 5px;
+            }
+
+            .game-canvas {
+                height: 250px;
+            }
+
+            .game-over-text {
+                font-size: 24px;
+                letter-spacing: 2px;
+            }
+
+            .dino {
+                bottom: 10px;
+                left: 20px;
+                width: 44px;
+                height: 32px;
+            }
+
+            @keyframes jump {
+                0% {
+                    bottom: 10px;
+                }
+
+                40% {
+                    bottom: 150px;
+                }
+
+                100% {
+                    bottom: 10px;
+                }
+            }
+
+            .obstacle {
+                bottom: 10px;
+            }
+
+            .obstacle svg {
+                width: 100%;
+                height: 100%;
+            }
+
+            .cloud {
+                width: 40px;
+                height: 18px;
+            }
+
+            .cloud::before {
+                width: 24px;
+                height: 24px;
+                top: -12px;
+            }
+
+            .cloud::after {
+                width: 28px;
+                height: 28px;
+                top: -14px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="game-container">
+        <div class="game-header">
+            <div class="score-display">
+                <span>HI <span id="highScore">00000</span></span>
+                <span><span id="currentScore">00000</span></span>
+            </div>
+        </div>
+
+        <div class="game-canvas" id="gameCanvas">
+            <!-- Clouds will be added dynamically -->
+
+            <!-- Game Over Screen -->
+            <div class="game-over-screen" id="gameOverScreen">
+                <div class="game-over-text">G A M E O V E R</div>
+                <button class="restart-button" id="restartBtn">
+                    <div class="restart-icon"></div>
+                </button>
+            </div>
+
+            <!-- Dino -->
+            <div class="dino" id="dino">
+                <svg viewBox="0 0 110 80" fill="none" stroke="#535353" stroke-width="2">
+                    <!-- Đầu to vuông -->
+                    <rect x="70" y="10" width="35" height="30" fill="#fff" />
+
+                    <!-- Mắt -->
+                    <rect x="85" y="18" width="6" height="6" fill="#535353" />
+
+                    <!-- Thân -->
+                    <rect x="45" y="40" width="35" height="25" fill="#fff" />
+
+                    <!-- Chân trước -->
+                    <rect x="65" y="65" width="8" height="12" fill="#fff" />
+                    <rect x="63" y="77" width="12" height="3" fill="#fff" />
+
+                    <!-- Chân sau -->
+                    <rect x="48" y="65" width="8" height="12" fill="#fff" />
+                    <rect x="46" y="77" width="12" height="3" fill="#fff" />
+
+                    <!-- Tay nhỏ -->
+                    <rect x="48" y="48" width="5" height="8" fill="#fff" />
+
+                    <!-- Cổ nối -->
+                    <rect x="55" y="35" width="15" height="10" fill="#fff" />
+
+                    <!-- Đuôi - 3 đoạn -->
+                    <rect x="30" y="48" width="15" height="6" fill="#fff" />
+                    <rect x="15" y="50" width="15" height="5" fill="#fff" />
+                    <rect x="0" y="52" width="15" height="4" fill="#fff" />
+                </svg>
+            </div>
+
+            <!-- Ground -->
+            <div class="ground" id="ground"></div>
+            <div class="ground-pattern" id="groundPattern"></div>
+        </div>
+
+        <div class="game-controls">
+            <div class="control-info" id="controlInfo">
+                Nhấn SPACE hoặc chạm màn hình để bắt đầu
+            </div>
+            <div class="button-group">
+                <button class="game-button" id="startBtn">BẮT ĐẦU</button>
+                <button class="game-button" id="pauseBtn" style="display: none;">TẠM DỪNG</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const dino = document.getElementById('dino');
+        const gameCanvas = document.getElementById('gameCanvas');
+        const gameOverScreen = document.getElementById('gameOverScreen');
+        const startBtn = document.getElementById('startBtn');
+        const pauseBtn = document.getElementById('pauseBtn');
+        const restartBtn = document.getElementById('restartBtn');
+        const currentScoreEl = document.getElementById('currentScore');
+        const highScoreEl = document.getElementById('highScore');
+        const controlInfo = document.getElementById('controlInfo');
+        const ground = document.getElementById('ground');
+        const groundPattern = document.getElementById('groundPattern');
+
+        let isJumping = false;
+        let isGameOver = false;
+        let gameStarted = false;
+        let isPaused = false;
+        let score = 0;
+        let highScore = parseInt(localStorage.getItem('dinoHighScore')) || 0;
+        let scoreInterval;
+        let obstacleInterval;
+        let cloudInterval;
+        let checkCollisionInterval;
+        let obstacles = [];
+        let clouds = [];
+
+        highScoreEl.textContent = highScore.toString().padStart(5, '0');
+
+        // Tạo mây ban đầu
+        function createCloud() {
+            const cloud = document.createElement('div');
+            cloud.classList.add('cloud');
+            const randomTop = Math.random() * 150 + 30;
+            const randomDelay = Math.random() * 3;
+            cloud.style.top = randomTop + 'px';
+            cloud.style.right = '-70px';
+            cloud.style.animationDelay = randomDelay + 's';
+            gameCanvas.appendChild(cloud);
+            clouds.push(cloud);
+
+            setTimeout(() => {
+                cloud.classList.add('active');
+            }, 100);
+
+            setTimeout(() => {
+                if (cloud.parentElement) {
+                    cloud.remove();
+                }
+                clouds = clouds.filter(c => c !== cloud);
+            }, 20000 + randomDelay * 1000);
+        }
+
+        // Tạo chướng ngại vật
+        function createObstacle() {
+            if (isGameOver || isPaused) return;
+
+            const obstacle = document.createElement('div');
+            obstacle.classList.add('obstacle');
+
+            // Tạo ngẫu nhiên các loại cactus khác nhau
+            const type = Math.floor(Math.random() * 3);
+
+            if (type === 0) {
+                // Cactus cao (thấp hơn 50%)
+                obstacle.innerHTML = `
+                    <svg viewBox="0 0 20 30" fill="#6b6b6b">
+                        <rect x="7" y="0" width="6" height="30" />
+                        <rect x="2" y="7" width="5" height="10" />
+                        <rect x="13" y="10" width="5" height="8" />
+                    </svg>
+                `;
+                obstacle.style.width = '20px';
+                obstacle.style.height = '30px';
+            } else if (type === 1) {
+                // Cactus ngắn (thấp hơn 50%)
+                obstacle.innerHTML = `
+                    <svg viewBox="0 0 18 25" fill="#6b6b6b">
+                        <rect x="6" y="5" width="6" height="20" />
+                        <rect x="1" y="10" width="5" height="8" />
+                        <rect x="12" y="13" width="5" height="6" />
+                    </svg>
+                `;
+                obstacle.style.width = '18px';
+                obstacle.style.height = '25px';
+            } else {
+                // Cactus đôi (thấp hơn 50%)
+                obstacle.innerHTML = `
+                    <svg viewBox="0 0 34 32" fill="#6b6b6b">
+                        <rect x="4" y="0" width="5" height="32" />
+                        <rect x="0" y="10" width="4" height="10" />
+                        <rect x="17" y="4" width="5" height="28" />
+                        <rect x="22" y="12" width="5" height="8" />
+                    </svg>
+                `;
+                obstacle.style.width = '34px';
+                obstacle.style.height = '32px';
+            }
+
+            gameCanvas.appendChild(obstacle);
+            obstacles.push(obstacle);
+
+            setTimeout(() => {
+                obstacle.classList.add('active');
+            }, 10);
+
+            setTimeout(() => {
+                if (obstacle.parentElement) {
+                    obstacle.remove();
+                }
+                obstacles = obstacles.filter(o => o !== obstacle);
+            }, 4000);
+        }
+
+        // Nhảy
+        function jump() {
+            if (isJumping || isGameOver || !gameStarted || isPaused) return;
+
+            isJumping = true;
+            dino.classList.add('jump');
+
+            setTimeout(() => {
+                dino.classList.remove('jump');
+                isJumping = false;
+            }, 1200);
+        }
+
+        // Kiểm tra va chạm
+        function checkCollision() {
+            if (isGameOver || !gameStarted || isPaused) return;
+
+            const dinoRect = dino.getBoundingClientRect();
+
+            for (let obstacle of obstacles) {
+                const obstacleRect = obstacle.getBoundingClientRect();
+
+                if (
+                    dinoRect.right > obstacleRect.left + 8 &&
+                    dinoRect.left < obstacleRect.right - 8 &&
+                    dinoRect.bottom > obstacleRect.top + 8
+                ) {
+                    gameOver();
+                    return;
+                }
+            }
+        }
+
+        // Cập nhật điểm
+        function updateScore() {
+            if (!gameStarted || isGameOver || isPaused) return;
+
+            score++;
+            currentScoreEl.textContent = score.toString().padStart(5, '0');
+
+            if (score > highScore) {
+                highScore = score;
+                highScoreEl.textContent = highScore.toString().padStart(5, '0');
+                localStorage.setItem('dinoHighScore', highScore);
+            }
+        }
+
+        // Game Over
+        function gameOver() {
+            isGameOver = true;
+            gameStarted = false;
+            gameOverScreen.classList.add('show');
+            ground.classList.remove('running');
+            groundPattern.classList.remove('running');
+            controlInfo.textContent = 'Nhấn nút Restart hoặc SPACE để chơi lại';
+            pauseBtn.style.display = 'none';
+            startBtn.style.display = 'inline-block';
+            startBtn.textContent = 'CHƠI LẠI';
+
+            clearInterval(scoreInterval);
+            clearInterval(obstacleInterval);
+            clearInterval(cloudInterval);
+            clearInterval(checkCollisionInterval);
+
+            obstacles.forEach(o => {
+                if (o.parentElement) {
+                    o.style.animationPlayState = 'paused';
+                }
+            });
+        }
+
+        // Bắt đầu game
+        function startGame() {
+            if (gameStarted && !isGameOver) return;
+
+            gameStarted = true;
+            isGameOver = false;
+            isPaused = false;
+            score = 0;
+            currentScoreEl.textContent = '00000';
+            gameOverScreen.classList.remove('show');
+            ground.classList.add('running');
+            groundPattern.classList.add('running');
+            controlInfo.textContent = 'Nhấn SPACE hoặc chạm màn hình để nhảy';
+            startBtn.style.display = 'none';
+            pauseBtn.style.display = 'inline-block';
+            pauseBtn.textContent = 'TẠM DỪNG';
+
+            // Xóa obstacles cũ
+            obstacles.forEach(o => {
+                if (o.parentElement) {
+                    o.remove();
+                }
+            });
+            obstacles = [];
+
+            // Bắt đầu tạo mây nhiều hơn
+            for (let i = 0; i < 3; i++) {
+                setTimeout(() => createCloud(), i * 2000);
+            }
+
+            scoreInterval = setInterval(updateScore, 100);
+            obstacleInterval = setInterval(createObstacle, 2500);
+            cloudInterval = setInterval(createCloud, 6000);
+            checkCollisionInterval = setInterval(checkCollision, 10);
+        }
+
+        // Tạm dừng/Tiếp tục
+        function togglePause() {
+            if (!gameStarted || isGameOver) return;
+
+            isPaused = !isPaused;
+
+            if (isPaused) {
+                pauseBtn.textContent = 'TIẾP TỤC';
+                controlInfo.textContent = 'Game đã tạm dừng';
+                ground.style.animationPlayState = 'paused';
+                groundPattern.style.animationPlayState = 'paused';
+                obstacles.forEach(o => {
+                    if (o.parentElement) {
+                        o.style.animationPlayState = 'paused';
+                    }
+                });
+                clouds.forEach(c => {
+                    if (c.parentElement) {
+                        c.style.animationPlayState = 'paused';
+                    }
+                });
+            } else {
+                pauseBtn.textContent = 'TẠM DỪNG';
+                controlInfo.textContent = 'Nhấn SPACE hoặc chạm màn hình để nhảy';
+                ground.style.animationPlayState = 'running';
+                groundPattern.style.animationPlayState = 'running';
+                obstacles.forEach(o => {
+                    if (o.parentElement) {
+                        o.style.animationPlayState = 'running';
+                    }
+                });
+                clouds.forEach(c => {
+                    if (c.parentElement) {
+                        c.style.animationPlayState = 'running';
+                    }
+                });
+            }
+        }
+
+        // Event listeners
+        startBtn.addEventListener('click', startGame);
+        pauseBtn.addEventListener('click', togglePause);
+        restartBtn.addEventListener('click', startGame);
+
+        document.addEventListener('keydown', (e) => {
+            if (e.code === 'Space') {
+                e.preventDefault();
+                if (!gameStarted || isGameOver) {
+                    startGame();
+                } else if (!isPaused) {
+                    jump();
+                }
+            }
+        });
+
+        gameCanvas.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (e.target.closest('.restart-button')) return;
+            if (!gameStarted || isGameOver) {
+                startGame();
+            } else if (!isPaused) {
+                jump();
+            }
+        });
+
+        gameCanvas.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            if (e.target.closest('.restart-button')) return;
+            if (!gameStarted || isGameOver) {
+                startGame();
+            } else if (!isPaused) {
+                jump();
+            }
+        }, { passive: false });
+
+        // Tạo mây ban đầu khi load trang
+        for (let i = 0; i < 5; i++) {
+            setTimeout(() => {
+                const cloud = document.createElement('div');
+                cloud.classList.add('cloud', 'active');
+                const randomTop = Math.random() * 150 + 30;
+                const randomLeft = Math.random() * 100;
+                cloud.style.top = randomTop + 'px';
+                cloud.style.left = randomLeft + '%';
+                gameCanvas.appendChild(cloud);
+                clouds.push(cloud);
+            }, i * 500);
+        }
+    </script>
+</body>
+
+</html>
