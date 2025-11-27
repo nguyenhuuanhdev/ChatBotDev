@@ -118,15 +118,85 @@ body {
     display: none;
 }
 
+/* chuyen doi dang */
+.chuyendoi {
+    position: fixed;
+    bottom: 35px;
+    /* display: flex;
+    justify-content: space-between; */
+    /* left: 32%; */
+    right: 35px;
+    width: 60px;
+    height: 60px;
+    border: none;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #6bffb2 0%, #5ac7ee 100%);
+    color: white;
+    font-size: 1.8rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+    z-index: 1000;
+    animation: pulse-glow 1.8s infinite ease-in-out;
+}
+
+/* hien va an */
+#toggle-btn {
+    position: fixed;
+    bottom: 120px;
+    /* giữ vị trí bạn muốn */
+    right: 35px;
+    width: 60px;
+    height: 60px;
+    border: none;
+    /* bỏ viền */
+    border-radius: 50%;
+    /* bo tròn */
+    background: linear-gradient(135deg, #6bffb2 0%, #5ac7ee 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    z-index: 1000;
+    animation: pulse-glow 1.8s infinite ease-in-out;
+    /* hiệu ứng nhấp nháy */
+    transition: transform 0.2s;
+    /* vẫn giữ transform hover nếu muốn */
+}
+
+#toggle-btn img {
+    width: 55px;
+    height: 55px;
+    object-fit: contain;
+    pointer-events: none;
+    /* click xuyên qua ảnh */
+}
+
+/* animation nhấp nháy */
+@keyframes pulse-glow {
+
+    0%,
+    100% {
+        box-shadow: 0 0 10px rgba(106, 255, 178, 0.7), 0 0 20px rgba(90, 199, 238, 0.7);
+        transform: scale(1);
+    }
+
+    50% {
+        box-shadow: 0 0 20px rgba(106, 255, 178, 1), 0 0 30px rgba(90, 199, 238, 1);
+        transform: scale(1.1);
+    }
+}
+
+
 
 /* 11/11 hang5 */
 /* tran bo nho */
 .ubuntu {
     position: fixed;
     bottom: 715px;
-    /* display: flex;
-    justify-content: space-between; */
-    /* left: 32%; */
     right: 35px;
     width: 60px;
     height: 60px;
@@ -2010,14 +2080,14 @@ body.show-chatbot .chatbot-popup {
 
 /* Responsive media query for mobile screens */
 @media (max-width: 768px) {
-    #music-toggle {
+    #toggle-btn {
         position: fixed;
         bottom: 24px;
         left: 20px;
         width: 60px;
         height: 60px;
         /* background-color: #ff4d4d; */
-        background: linear-gradient(135deg, #f83600 0%, #f9d423 100%);
+        background: linear-gradient(135deg, #6bffb2 0%, #5ac7ee 100%);
 
 
         border-radius: 50%;
@@ -2032,6 +2102,32 @@ body.show-chatbot .chatbot-popup {
         box-shadow: 0 0 15px rgba(255, 0, 0, 0.6);
         animation: pulse-glow-strong 1.6s infinite ease-in-out;
         transition: all 0.3s ease;
+    }
+
+    .chuyendoi {
+        position: fixed;
+        bottom: 24px;
+        /* left: calc(50% - 30px);  nếu về 3 mục*/
+        /* /* 30px là nửa width  */
+        /* transform: none; */
+        /* left: 80pt; */
+        right: 20px;
+        transform: translateX(-50%);
+        width: 60px;
+        height: 60px;
+        background: linear-gradient(135deg, #6bffb2 0%, #5ac7ee 100%);
+        color: white;
+        font-size: 32px;
+        border: none;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 0 15px rgba(0, 174, 255, 0.6);
+        cursor: pointer;
+        z-index: 1;
+        transition: all 0.3s ease;
+        animation: pulse-glow-strong 1.6s infinite ease-in-out;
     }
 }
 

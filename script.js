@@ -27,6 +27,21 @@ const userData = {
     }
 };
 
+// test ảnh ẩn hiện
+let isDefault = true; // trạng thái ảnh hiện tại
+const img = document.getElementById('swap-icon'); // <--- đây là cái thiếu
+
+document.getElementById('toggle-btn').addEventListener('click', () => {
+    if (isDefault) {
+        img.src = "img/dauthoat.png";   // ảnh sau
+        isDefault = false;
+    } else {
+        img.src = "img/kinhlup.png";   // ảnh ban đầu
+        isDefault = true;
+    }
+});
+
+
 
 
 //test form anhdev
