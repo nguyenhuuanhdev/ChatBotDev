@@ -1985,7 +1985,7 @@ body.show-chatbot .chatbot-popup {
     /* test zalo */
     .zalo {
         position: fixed;
-        top: 5%;
+        top: 4%;
         /* 30% là đầu video, trừ thêm chiều cao icon (60px) để nó đứng trên */
         left: 30%;
         /* canh giữa ngang */
