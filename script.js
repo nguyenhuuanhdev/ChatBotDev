@@ -9,16 +9,9 @@ const closeChatbot = document.querySelector("#close-chatbot");
 
 
 // Api setup
-//const API_KEY = "AIzaSyCtyZiNnUtSoQCdgozybOjhbRwTQCDAoKA"; // LINK LẤY API KEY: https://aistudio.google.com/apikey
-//const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${API_KEY}`;
-// api gemini 2.5
-// const API_KEY = "AIzaSyC3La4s-4pr4_2tm8-ER48aIo9KyI-Ngj8"; 
-const API_KEY = "AIzaSyAmNp9OkCN1J5oMpMc8AIrCaNJCppG3lmM"; // Khóa API của bạn
-const NEW_MODEL_NAME = "gemini-2.5-flash"; // Thay đổi tên mô hình
-const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/${NEW_MODEL_NAME}:generateContent?key=${API_KEY}`;
 
-// API_URL mới sẽ là: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=AIzaSyCtyZiNnUtSoQCdgozybOjhbRwTQCDAoKA
-//api gemini 2.5
+
+
 const userData = {
     message: null,
     file: {
@@ -188,11 +181,6 @@ const chatHistory = [
 //chatbot anh
 
 
-//chatbot anh
-
-
-
-
 
 const initialInputHeight = messageInput.scrollHeight;
 
@@ -208,37 +196,40 @@ const createMessageElement = (content, ...classes) => {
 const generateBotResponse = async (incomingMessageDiv) => {
     const messageElement = incomingMessageDiv.querySelector(".message-text");
 
-
-
     chatHistory.push({
         role: "user",
         parts: [{ text: userData.message }, ...(userData.file.data ? [{ inline_data: userData.file }] : [])],
     });
 
-    // API request options
-    const requestOptions = {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-            contents: chatHistory
-        })
-    }
-
     try {
-        // Fetch bot response from API
-        const response = await fetch(API_URL, requestOptions);
-        const data = await response.json();
-        if (!response.ok) throw new Error(data.error.message);
+        const res = await fetch(BACKEND_URL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ chatHistory })
+        });
 
-        // Extract and display bot's response text
-        const apiResponseText = data.candidates[0].content.parts[0].text.replace(/\*\*(.*?)\*\*/g, "$1").trim();
+
+        const data = await res.json();
+
+        // Kiểm tra data trước khi dùng
+        let apiResponseText = "Xin lỗi, bot chưa trả lời được 😢";
+        if (data.candidates && data.candidates.length > 0 &&
+            data.candidates[0].content && data.candidates[0].content.parts &&
+            data.candidates[0].content.parts.length > 0 &&
+            data.candidates[0].content.parts[0].text
+        ) {
+            apiResponseText = data.candidates[0].content.parts[0].text.trim();
+        }
+
         messageElement.innerText = apiResponseText;
+
         chatHistory.push({
             role: "model",
             parts: [{ text: apiResponseText }]
         });
-    } catch (error) {
-        messageElement.innerText = error.message;
+
+    } catch (err) {
+        messageElement.innerText = "❌ Lỗi server: " + err.message;
         messageElement.style.color = "#ff0000";
     } finally {
         userData.file = {};
@@ -541,7 +532,6 @@ function stopResize() {
     document.removeEventListener('mousemove', handleResize);
     document.removeEventListener('mouseup', stopResize);
 }
-
 
 
 // test 8/7

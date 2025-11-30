@@ -174,7 +174,7 @@ body {
 /* chuyen doi dang */
 .chuyendoi {
     position: fixed;
-    bottom: 120px;
+    bottom: 205px;
     /* display: flex;
     justify-content: space-between; */
     /* left: 32%; */
@@ -198,7 +198,7 @@ body {
 /* hien va an */
 #toggle-btn {
     position: fixed;
-    bottom: 35px;
+    bottom: 120px;
     /* giữ vị trí bạn muốn */
     right: 35px;
     width: 60px;
@@ -2136,7 +2136,7 @@ body.show-chatbot .chatbot-popup {
     #toggle-btn {
         position: fixed;
         bottom: 24px;
-        right: 20px;
+        left: 20px;
         width: 60px;
         height: 60px;
         /* background-color: #ff4d4d; */
@@ -2159,7 +2159,7 @@ body.show-chatbot .chatbot-popup {
 
     .chuyendoi {
         position: fixed;
-        bottom: 24px;
+        bottom: 100px;
         /* left: calc(50% - 30px);  nếu về 3 mục*/
         /* /* 30px là nửa width  */
         /* transform: none; */
