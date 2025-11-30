@@ -206,6 +206,7 @@ const createMessageElement = (content, ...classes) => {
 };
 
 // Generate bot response using API
+// Generate bot response using API
 const generateBotResponse = async (incomingMessageDiv) => {
     const messageElement = incomingMessageDiv.querySelector(".message-text");
 
@@ -214,6 +215,8 @@ const generateBotResponse = async (incomingMessageDiv) => {
         parts: [{ text: userData.message }, ...(userData.file.data ? [{ inline_data: userData.file }] : [])],
     });
 
+    console.log("📤 Gửi lên server:", JSON.stringify(chatHistory, null, 2));
+
     try {
         const res = await fetch(BACKEND_URL, {
             method: "POST",
@@ -221,28 +224,43 @@ const generateBotResponse = async (incomingMessageDiv) => {
             body: JSON.stringify({ chatHistory })
         });
 
+        console.log("📡 Response status:", res.status);
+        console.log("📡 Response headers:", res.headers);
 
         const data = await res.json();
+        console.log("📥 Response data:", JSON.stringify(data, null, 2));
 
         // Kiểm tra data trước khi dùng
         let apiResponseText = "Xin lỗi, bot chưa trả lời được 😢";
-        if (data.candidates && data.candidates.length > 0 &&
-            data.candidates[0].content && data.candidates[0].content.parts &&
+
+        if (data.error) {
+            console.error("❌ API trả về lỗi:", data.error);
+            apiResponseText = `❌ Lỗi: ${data.error}`;
+        } else if (
+            data.candidates &&
+            data.candidates.length > 0 &&
+            data.candidates[0].content &&
+            data.candidates[0].content.parts &&
             data.candidates[0].content.parts.length > 0 &&
             data.candidates[0].content.parts[0].text
         ) {
             apiResponseText = data.candidates[0].content.parts[0].text.trim();
+            console.log("✅ Bot trả lời:", apiResponseText);
+        } else {
+            console.error("❌ Response không có text:", data);
+            apiResponseText = "Bot trả lời lỗi format: " + JSON.stringify(data).substring(0, 100);
         }
 
         messageElement.innerText = apiResponseText;
-
         chatHistory.push({
             role: "model",
             parts: [{ text: apiResponseText }]
         });
 
     } catch (err) {
-        messageElement.innerText = "❌ Lỗi server: " + err.message;
+        console.error("💥 Exception:", err);
+        console.error("💥 Error stack:", err.stack);
+        messageElement.innerText = "❌ Lỗi kết nối: " + err.message;
         messageElement.style.color = "#ff0000";
     } finally {
         userData.file = {};
