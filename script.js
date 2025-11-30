@@ -11,15 +11,23 @@ const closeChatbot = document.querySelector("#close-chatbot");
 const BACKEND_URL = "/api/gemini";
 
 async function sendToGemini(message, fileData = null, mime = null) {
+    // Gói message vào mảng chatHistory
+    const chatHistory = [
+        {
+            role: "user",
+            parts: [{ text: message }, ...(fileData ? [{ inline_data: { data: fileData, mime_type: mime } }] : [])]
+        }
+    ];
+
     const res = await fetch(BACKEND_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message, fileData, mime })
+        body: JSON.stringify({ chatHistory })
     });
 
-    return await res.json();
+    const data = await res.json();
+    return data; // data.reply và data.raw
 }
-
 
 // Api setup
 
