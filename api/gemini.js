@@ -5,6 +5,14 @@ const keys = [
 ].filter(Boolean); // Loại bỏ key undefined/null
 
 export default async function handler(req, res) {
+    // Endpoint test để kiểm tra key
+    if (req.method === "GET") {
+        return res.status(200).json({
+            keysConfigured: keys.length,
+            keysPreview: keys.map(k => k ? k.substring(0, 10) + "..." : "missing")
+        });
+    }
+
     if (req.method !== "POST") {
         return res.status(405).json({ error: "Method not allowed" });
     }
