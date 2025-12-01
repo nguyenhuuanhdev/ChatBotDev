@@ -144,7 +144,7 @@ body {
     animation: pulse-glow 1.8s infinite ease-in-out;
 }
 
-.test2 {
+.car {
     position: fixed;
     /* bottom: 545px; */
     bottom: 375px;
@@ -2323,7 +2323,7 @@ body.show-chatbot .chatbot-popup {
         transition: all 0.3s ease;
     } */
 
-    .test2 {
+    .car {
         position: fixed;
         bottom: 100px;
         /* left: calc(50% - 30px);  nếu về 3 mục*/
