@@ -5,8 +5,8 @@ const currentTime = document.querySelector("h1"),
 let alarmTime, isAlarmSet, alarmTriggered = false,
     ringtone = new Audio("./files/alarm.mp3");
 
-// Yêu cầu quyền thông báo khi trang load
-if ("Notification" in window && Notification.permission === "default") {
+// Tự động yêu cầu quyền khi có HTTPS
+if ("Notification" in window && Notification.permission === "default" && window.location.protocol === "https:") {
     Notification.requestPermission();
 }
 
@@ -49,7 +49,12 @@ setInterval(() => {
         ringtone.play();
         ringtone.loop = true;
 
-        // Hiện thông báo
+        // Rung điện thoại (hoạt động cả HTTP)
+        if ("vibrate" in navigator) {
+            navigator.vibrate([200, 100, 200, 100, 200, 100, 200]);
+        }
+
+        // Hiện thông báo (chỉ trên HTTPS)
         if ("Notification" in window && Notification.permission === "granted") {
             const notification = new Notification("⏰ Alarm!", {
                 body: `Đã đến ${alarmTime}`,
@@ -63,6 +68,15 @@ setInterval(() => {
                 notification.close();
             };
         }
+
+        // Thay đổi tiêu đề tab để báo hiệu (hoạt động cả HTTP)
+        document.title = "🔔 ALARM RINGING! 🔔";
+        let titleBlink = setInterval(() => {
+            document.title = document.title === "🔔 ALARM RINGING! 🔔" ? "⏰ WAKE UP! ⏰" : "🔔 ALARM RINGING! 🔔";
+        }, 500);
+
+        // Lưu interval để clear sau
+        window.titleBlinkInterval = titleBlink;
     }
 }, 1000);
 
@@ -74,17 +88,19 @@ function setAlarm() {
         ringtone.currentTime = 0;
         content.classList.remove("disable");
         setAlarmBtn.innerText = "Set Alarm";
+        document.title = "Alarm Clock";
+
+        // Clear title blink
+        if (window.titleBlinkInterval) {
+            clearInterval(window.titleBlinkInterval);
+        }
+
         return isAlarmSet = false;
     }
 
-    // Kiểm tra quyền thông báo
-    if ("Notification" in window && Notification.permission !== "granted") {
-        Notification.requestPermission().then(permission => {
-            if (permission !== "granted") {
-                alert("Vui lòng cho phép thông báo để alarm hoạt động khi tab ẩn!");
-                return;
-            }
-        });
+    // Kiểm tra quyền thông báo (chỉ trên HTTPS)
+    if ("Notification" in window && Notification.permission !== "granted" && window.location.protocol === "https:") {
+        Notification.requestPermission();
     }
 
     let time = `${selectMenu[0].value}:${selectMenu[1].value} ${selectMenu[2].value}`;
