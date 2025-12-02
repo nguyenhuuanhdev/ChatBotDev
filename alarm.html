@@ -1,18 +1,47 @@
 <!DOCTYPE html>
-<!-- Coding By CodingNepal - youtube.com/codingnepal -->
-<html lang="en" dir="ltr">
+<html lang="vi" dir="ltr">
 
 <head>
     <meta charset="utf-8">
     <title>Alarm Clock in JavaScript | CodingNepal</title>
     <link rel="stylesheet" href="alarm.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- THÊM ĐOẠN NÀY VÀO -->
+    <meta name="theme-color" content="#4A98F7">
+    <meta name="description" content="Báo thức thông minh">
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icon-192.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Alarm">
+    <!-- HẾT ĐOẠN THÊM -->
 </head>
 
 <body>
+    <!-- THÊM BANNER CÀI ĐẶT NGAY SAU THẺ <body> -->
+    <div id="installBanner"
+        style="display:none; position:fixed; top:0; left:0; right:0; background:#4A98F7; color:white; padding:15px; text-align:center; z-index:9999; box-shadow:0 2px 10px rgba(0,0,0,0.2);">
+        <p style="margin:0 0 10px 0; font-size:14px;">📱 <strong>Cài đặt Alarm Clock</strong></p>
+        <p style="margin:0 0 10px 0; font-size:12px;">Sử dụng như app để hoạt động tốt hơn!</p>
+        <button id="installBtn"
+            style="background:white; color:#4A98F7; border:none; padding:8px 20px; border-radius:20px; font-weight:600; margin-right:10px; cursor:pointer;">Cài
+            đặt</button>
+        <button id="dismissBtn"
+            style="background:transparent; color:white; border:1px solid white; padding:8px 20px; border-radius:20px; cursor:pointer;">Để
+            sau</button>
+    </div>
+    <!-- HẾT ĐOẠN THÊM -->
+
     <div class="wrapper">
         <img src="./files/clock.svg" alt="clock">
         <h1>00:00:00 PM</h1>
+
+        <!-- THÊM STATUS -->
+        <div style="text-align:center; margin:10px 0; font-size:14px; color:#666;" id="status">
+            Chọn giờ báo thức
+        </div>
+
         <div class="content">
             <div class="column">
                 <select>
@@ -31,7 +60,11 @@
             </div>
         </div>
         <button>Set Alarm</button>
+
+        <!-- THÊM WAKE LOCK STATUS -->
+        <div style="text-align:center; margin-top:10px; font-size:12px; color:#28a745;" id="wakeLockStatus"></div>
     </div>
+
     <script src="alarm.js"></script>
 </body>
 
