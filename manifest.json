@@ -1,6 +1,6 @@
 {
-    "name": "Alarm Clock - Báo thức thông minh",
-    "short_name": "Alarm",
+    "name": "Anhs",
+    "short_name": "Anhs",
     "description": "Báo thức hoạt động tốt",
     "start_url": "/",
     "display": "standalone",
