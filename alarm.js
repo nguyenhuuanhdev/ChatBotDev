@@ -1,15 +1,12 @@
 const currentTime = document.querySelector("h1"),
     content = document.querySelector(".content"),
     selectMenu = document.querySelectorAll("select"),
-    setAlarmBtn = document.querySelector("button"),
-    status = document.getElementById("status"),
-    wakeLockStatus = document.getElementById("wakeLockStatus");
-
+    setAlarmBtn = document.querySelector("button");
 let alarmTime, isAlarmSet, alarmTriggered = false,
     ringtone = new Audio("./files/alarm.mp3"),
     wakeLock = null;
 
-// PWA Install
+// === THÊM PHẦN PWA ===
 let deferredPrompt;
 const installBanner = document.getElementById('installBanner');
 const installBtn = document.getElementById('installBtn');
@@ -18,33 +15,39 @@ const dismissBtn = document.getElementById('dismissBtn');
 window.addEventListener('beforeinstallprompt', (e) => {
     e.preventDefault();
     deferredPrompt = e;
-    installBanner.style.display = 'block';
+    if (installBanner) installBanner.style.display = 'block';
 });
 
-installBtn.addEventListener('click', async () => {
-    if (deferredPrompt) {
-        deferredPrompt.prompt();
-        const { outcome } = await deferredPrompt.userChoice;
-        deferredPrompt = null;
-        installBanner.style.display = 'none';
-    }
-});
+if (installBtn) {
+    installBtn.addEventListener('click', async () => {
+        if (deferredPrompt) {
+            deferredPrompt.prompt();
+            const { outcome } = await deferredPrompt.userChoice;
+            deferredPrompt = null;
+            if (installBanner) installBanner.style.display = 'none';
+        }
+    });
+}
 
-dismissBtn.addEventListener('click', () => {
-    installBanner.style.display = 'none';
-});
+if (dismissBtn) {
+    dismissBtn.addEventListener('click', () => {
+        if (installBanner) installBanner.style.display = 'none';
+    });
+}
 
 // Service Worker
 if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('sw.js');
+    navigator.serviceWorker.register('sw.js').catch(err => {
+        console.log('Service Worker error:', err);
+    });
 }
+// === HẾT PHẦN PWA ===
 
-// Notification permission
-if ("Notification" in window && Notification.permission === "default") {
+// Yêu cầu quyền thông báo khi load trang (chỉ trên HTTPS)
+if ("Notification" in window && Notification.permission === "default" && window.location.protocol === "https:") {
     Notification.requestPermission();
 }
 
-// Populate selects
 for (let i = 12; i > 0; i--) {
     i = i < 10 ? `0${i}` : i;
     let option = `<option value="${i}">${i}</option>`;
@@ -61,22 +64,22 @@ for (let i = 2; i > 0; i--) {
     selectMenu[2].firstElementChild.insertAdjacentHTML("afterend", option);
 }
 
-// Wake Lock
+// Hàm giữ màn hình sáng
 async function requestWakeLock() {
     try {
         if ('wakeLock' in navigator) {
             wakeLock = await navigator.wakeLock.request('screen');
-            wakeLockStatus.textContent = "🔒 Màn hình được giữ sáng";
+            console.log('Wake Lock đã bật - Màn hình sẽ không tắt');
 
             wakeLock.addEventListener('release', () => {
-                wakeLockStatus.textContent = "";
+                console.log('Wake Lock đã tắt');
                 if (isAlarmSet && !alarmTriggered) {
                     setTimeout(() => requestWakeLock(), 100);
                 }
             });
         }
     } catch (err) {
-        console.log('Wake Lock error:', err);
+        console.log('Không thể bật Wake Lock:', err);
     }
 }
 
@@ -84,29 +87,16 @@ function releaseWakeLock() {
     if (wakeLock !== null) {
         wakeLock.release();
         wakeLock = null;
-        wakeLockStatus.textContent = "";
+        console.log('Wake Lock đã được giải phóng');
     }
 }
 
-// Badge
-function updateBadge(count) {
-    if ('setAppBadge' in navigator) {
-        if (count > 0) {
-            navigator.setAppBadge(count);
-        } else {
-            navigator.clearAppBadge();
-        }
-    }
-}
-
-// Clock
 setInterval(() => {
     let date = new Date(),
         h = date.getHours(),
         m = date.getMinutes(),
         s = date.getSeconds(),
         ampm = "AM";
-
     if (h >= 12) {
         h = h - 12;
         ampm = "PM";
@@ -121,6 +111,7 @@ setInterval(() => {
         alarmTriggered = true;
 
         ringtone.play().catch(e => {
+            console.log("Lỗi phát âm thanh:", e);
             setTimeout(() => ringtone.play(), 100);
         });
         ringtone.loop = true;
@@ -133,13 +124,13 @@ setInterval(() => {
         }
 
         if ("Notification" in window && Notification.permission === "granted") {
-            const notification = new Notification("⏰ ALARM!", {
-                body: `Đã đến ${alarmTime}! Nhấn để tắt.`,
+            const notification = new Notification("⏰ ALARM RINGING!", {
+                body: `Đã đến ${alarmTime} - Nhấn để tắt báo thức`,
                 icon: "icon-192.png",
                 badge: "icon-192.png",
                 requireInteraction: true,
-                vibrate: [200, 100, 200, 100, 200],
-                tag: 'alarm-ringing'
+                vibrate: [200, 100, 200, 100, 200, 100, 200],
+                tag: 'alarm-clock'
             });
 
             notification.onclick = () => {
@@ -148,16 +139,10 @@ setInterval(() => {
             };
         }
 
-        document.title = "🔔 ALARM! 🔔";
+        document.title = "🔔 ALARM RINGING! 🔔";
         window.titleBlinkInterval = setInterval(() => {
-            document.title = document.title === "🔔 ALARM! 🔔" ? "⏰ WAKE UP! ⏰" : "🔔 ALARM! 🔔";
+            document.title = document.title === "🔔 ALARM RINGING! 🔔" ? "⏰ WAKE UP! ⏰" : "🔔 ALARM RINGING! 🔔";
         }, 500);
-
-        status.textContent = "⏰ ALARM ĐANG RÉO!";
-        status.style.color = "red";
-        status.style.fontWeight = "bold";
-
-        updateBadge(1);
     }
 }, 1000);
 
@@ -170,15 +155,15 @@ async function setAlarm() {
         content.classList.remove("disable");
         setAlarmBtn.innerText = "Set Alarm";
         document.title = "Alarm Clock";
-        status.textContent = "Chọn giờ báo thức";
-        status.style.color = "#666";
-        status.style.fontWeight = "normal";
 
-        if (window.titleBlinkInterval) clearInterval(window.titleBlinkInterval);
-        if (window.vibrateInterval) clearInterval(window.vibrateInterval);
+        if (window.titleBlinkInterval) {
+            clearInterval(window.titleBlinkInterval);
+        }
+        if (window.vibrateInterval) {
+            clearInterval(window.vibrateInterval);
+        }
 
         releaseWakeLock();
-        updateBadge(0);
 
         return isAlarmSet = false;
     }
@@ -188,10 +173,14 @@ async function setAlarm() {
         return alert("Please, select a valid time to set Alarm!");
     }
 
-    if ("Notification" in window && Notification.permission === "default") {
-        const permission = await Notification.requestPermission();
-        if (permission !== "granted") {
-            alert("⚠️ Hãy cho phép thông báo để alarm hoạt động tốt hơn!");
+    if ("Notification" in window) {
+        if (Notification.permission === "default") {
+            const permission = await Notification.requestPermission();
+            if (permission !== "granted") {
+                alert("⚠️ Hãy cho phép thông báo để alarm hoạt động tốt hơn khi ẩn tab!\n\nCách bật: Nhấn vào biểu tượng khóa 🔒 bên URL → Notifications → Allow");
+            }
+        } else if (Notification.permission === "denied") {
+            alert("⚠️ Thông báo đã bị chặn!\n\nCách bật lại:\n1. Nhấn biểu tượng khóa 🔒 bên URL\n2. Chọn Notifications → Allow\n3. Reload trang");
         }
     }
 
@@ -202,11 +191,6 @@ async function setAlarm() {
     alarmTriggered = false;
     content.classList.add("disable");
     setAlarmBtn.innerText = "Clear Alarm";
-    status.textContent = `⏰ Báo thức: ${time}`;
-    status.style.color = "#28a745";
-    status.style.fontWeight = "bold";
-
-    updateBadge(1);
 }
 
 setAlarmBtn.addEventListener("click", setAlarm);
@@ -214,7 +198,13 @@ setAlarmBtn.addEventListener("click", setAlarm);
 document.addEventListener('visibilitychange', () => {
     if (document.hidden && isAlarmSet && alarmTriggered) {
         if (ringtone.paused) {
-            ringtone.play().catch(e => console.log('Play error:', e));
+            ringtone.play().catch(e => console.log('Không thể phát âm thanh khi tab ẩn:', e));
         }
+    }
+});
+
+window.addEventListener('pagehide', (e) => {
+    if (isAlarmSet && alarmTriggered) {
+        e.preventDefault();
     }
 });
