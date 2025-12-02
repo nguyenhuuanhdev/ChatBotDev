@@ -726,7 +726,7 @@ body {
 
 
 /* game */
-#game {
+.dragon {
     position: fixed;
     bottom: 290px;
     /* display: flex;
@@ -2284,7 +2284,7 @@ body.show-chatbot .chatbot-popup {
 }
 
 @media (max-width: 768px) {
-    #game {
+    .dragon {
         position: fixed;
         bottom: 100px;
         left: 20px;
@@ -2304,4 +2304,6 @@ body.show-chatbot .chatbot-popup {
         animation: pulse-glow-strong 1.6s infinite ease-in-out;
         transition: all 0.3s ease;
     }
+
+
 }
