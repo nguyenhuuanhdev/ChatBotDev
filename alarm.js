@@ -5,11 +5,6 @@ const currentTime = document.querySelector("h1"),
 let alarmTime, isAlarmSet, alarmTriggered = false,
     ringtone = new Audio("./files/alarm.mp3");
 
-// Tự động yêu cầu quyền khi có HTTPS
-if ("Notification" in window && Notification.permission === "default" && window.location.protocol === "https:") {
-    Notification.requestPermission();
-}
-
 for (let i = 12; i > 0; i--) {
     i = i < 10 ? `0${i}` : i;
     let option = `<option value="${i}">${i}</option>`;
@@ -46,15 +41,15 @@ setInterval(() => {
         alarmTriggered = true;
 
         // Phát âm thanh
-        ringtone.play();
+        ringtone.play().catch(e => console.log("Audio play error:", e));
         ringtone.loop = true;
 
-        // Rung điện thoại (hoạt động cả HTTP)
+        // Rung điện thoại
         if ("vibrate" in navigator) {
             navigator.vibrate([200, 100, 200, 100, 200, 100, 200]);
         }
 
-        // Hiện thông báo (chỉ trên HTTPS)
+        // Hiện thông báo
         if ("Notification" in window && Notification.permission === "granted") {
             const notification = new Notification("⏰ Alarm!", {
                 body: `Đã đến ${alarmTime}`,
@@ -69,18 +64,16 @@ setInterval(() => {
             };
         }
 
-        // Thay đổi tiêu đề tab để báo hiệu (hoạt động cả HTTP)
+        // Nhấp nháy tiêu đề tab
         document.title = "🔔 ALARM RINGING! 🔔";
         let titleBlink = setInterval(() => {
             document.title = document.title === "🔔 ALARM RINGING! 🔔" ? "⏰ WAKE UP! ⏰" : "🔔 ALARM RINGING! 🔔";
         }, 500);
-
-        // Lưu interval để clear sau
         window.titleBlinkInterval = titleBlink;
     }
 }, 1000);
 
-function setAlarm() {
+async function setAlarm() {
     if (isAlarmSet) {
         alarmTime = "";
         alarmTriggered = false;
@@ -90,7 +83,6 @@ function setAlarm() {
         setAlarmBtn.innerText = "Set Alarm";
         document.title = "Alarm Clock";
 
-        // Clear title blink
         if (window.titleBlinkInterval) {
             clearInterval(window.titleBlinkInterval);
         }
@@ -98,15 +90,23 @@ function setAlarm() {
         return isAlarmSet = false;
     }
 
-    // Kiểm tra quyền thông báo (chỉ trên HTTPS)
-    if ("Notification" in window && Notification.permission !== "granted" && window.location.protocol === "https:") {
-        Notification.requestPermission();
-    }
-
     let time = `${selectMenu[0].value}:${selectMenu[1].value} ${selectMenu[2].value}`;
     if (time.includes("Hour") || time.includes("Minute") || time.includes("AM/PM")) {
         return alert("Please, select a valid time to set Alarm!");
     }
+
+    // YÊU CẦU QUYỀN THÔNG BÁO RÕ RÀNG
+    if ("Notification" in window) {
+        if (Notification.permission === "default") {
+            const permission = await Notification.requestPermission();
+            if (permission !== "granted") {
+                alert("⚠️ Bạn cần cho phép thông báo để alarm hoạt động khi tab ẩn!\n\nCách bật:\n1. Nhấn vào icon khóa 🔒 bên cạnh URL\n2. Chọn Notifications → Allow");
+            }
+        } else if (Notification.permission === "denied") {
+            alert("⚠️ Thông báo đã bị chặn!\n\nCách bật lại:\n1. Nhấn vào icon khóa 🔒 bên cạnh URL\n2. Chọn Notifications → Allow\n3. Reload trang");
+        }
+    }
+
     alarmTime = time;
     isAlarmSet = true;
     alarmTriggered = false;
