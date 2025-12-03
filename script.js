@@ -778,13 +778,6 @@ document.getElementById('music-toggle').addEventListener('click', () => {
     }
 });
 
-// test 10/7
-
-// const centerBtn = document.getElementById("center-link");
-
-// centerBtn.addEventListener("click", () => {
-//     window.location.href = "https://www.facebook.com/nguyenhuuanhnopro"; // thay bằng trang bạn muốn
-// });
 
 
 
@@ -795,33 +788,33 @@ document.getElementById('music-toggle').addEventListener('click', () => {
 
 // mục nhận quà
 
-const giftToggle = document.getElementById("gift-toggle");
-const giftPopup = document.getElementById("gift-popup");
-const closeGift = document.getElementById("close-gift");
-const giftMessage = document.getElementById("gift-message");
-const receiveGift = document.getElementById("receive-gift");
+// const giftToggle = document.getElementById("gift-toggle");
+// const giftPopup = document.getElementById("gift-popup");
+// const closeGift = document.getElementById("close-gift");
+// const giftMessage = document.getElementById("gift-message");
+// const receiveGift = document.getElementById("receive-gift");
 
 
 
-giftToggle.onclick = () => {
-    giftPopup.classList.remove("hidden");
-};
+// giftToggle.onclick = () => {
+//     giftPopup.classList.remove("hidden");
+// };
 
-closeGift.onclick = () => {
-    giftPopup.classList.add("hidden");
-};
+// closeGift.onclick = () => {
+//     giftPopup.classList.add("hidden");
+// };
 
-receiveGift.onclick = () => {
-    const randomMsg = messages[Math.floor(Math.random() * messages.length)];
-    const randomImg = images[Math.floor(Math.random() * images.length)];
+// receiveGift.onclick = () => {
+//     const randomMsg = messages[Math.floor(Math.random() * messages.length)];
+//     const randomImg = images[Math.floor(Math.random() * images.length)];
 
 
-    //
-    giftMessage.innerHTML = `
-        <p style="margin-bottom: 10px;">${randomMsg}</p>
-        <img src="${randomImg}" alt="Ảnh món quà" style="width: 100%; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.2);">
-    `;
-};
+
+//     giftMessage.innerHTML = `
+//         <p style="margin-bottom: 10px;">${randomMsg}</p>
+//         <img src="${randomImg}" alt="Ảnh món quà" style="width: 100%; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.2);">
+//     `;
+// };
 
 
 //formspree 
