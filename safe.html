@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secret Safe Box</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: url('img/giangsinh.png') center/cover no-repeat;
+            background-size: contain;
+            background-repeat: repeat-x;
+            /* lặp theo chiều ngang */
+            background-size: calc(100% / 3) auto;
+            /* chia chiều ngang thành 3 */
+            background-position: top center;
+
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            padding: 20px;
+            position: relative;
+        }
+
+
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: 0;
+        }
+
+        .heart {
+            position: fixed;
+            top: -50px;
+            font-size: 30px;
+            animation: fall linear;
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        @keyframes fall {
+            to {
+                top: 100vh;
+                transform: translateY(20px);
+            }
+        }
+
+        .safe-container {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 50px 60px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            width: 100%;
+            max-width: 500px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .safe-icon {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 20px;
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
+        }
+
+        .safe-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 32px;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 16px;
+        }
+
+        .input-group {
+            margin-bottom: 30px;
+        }
+
+        .password-input {
+            width: 100%;
+            padding: 15px 20px;
+            font-size: 24px;
+            text-align: center;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            letter-spacing: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .password-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .password-input.error {
+            border-color: #ff6b6b;
+            animation: shake 0.5s;
+        }
+
+        @keyframes shake {
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            25% {
+                transform: translateX(-10px);
+            }
+
+            75% {
+                transform: translateX(10px);
+            }
+        }
+
+        .btn {
+            width: 100%;
+            padding: 18px;
+            font-size: 20px;
+            font-weight: 600;
+            color: white;
+            background: linear-gradient(45deg, #4caf50, #45a049);
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(76, 175, 80, 0.4);
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 40px rgba(76, 175, 80, 0.5);
+            background: linear-gradient(45deg, #45a049, #4caf50);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .error-message {
+            color: #ff6b6b;
+            margin-top: 15px;
+            font-size: 14px;
+            font-weight: 500;
+            min-height: 20px;
+        }
+
+        .success-container {
+            display: none;
+        }
+
+        .success-container.show {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .success-icon {
+            font-size: 100px;
+            margin-bottom: 20px;
+        }
+
+        .success-title {
+            color: #4caf50;
+            font-size: 36px;
+            margin-bottom: 20px;
+        }
+
+        .success-message {
+            color: #666;
+            font-size: 18px;
+            margin-bottom: 30px;
+        }
+
+        .meme-frame {
+            width: 100%;
+            max-width: 400px;
+            height: 400px;
+            background: white;
+            border: 3px solid #ddd;
+            border-radius: 15px;
+            margin: 0 auto 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .meme-frame img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .btn-secondary {
+            padding: 15px 30px;
+            font-size: 16px;
+            font-weight: 600;
+            color: white;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn-download {
+            background: linear-gradient(45deg, #4caf50, #45a049);
+        }
+
+        .btn-download:hover {
+            background: linear-gradient(45deg, #45a049, #4caf50);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            body {
+                padding: 20px;
+            }
+
+            .safe-container {
+                padding: 40px 30px;
+                max-width: 100%;
+            }
+
+            .safe-icon {
+                width: 90px;
+                height: 90px;
+            }
+
+            h1 {
+                font-size: 28px;
+            }
+
+            .subtitle {
+                font-size: 15px;
+            }
+
+            .meme-frame {
+                max-width: 100%;
+                height: 350px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 15px;
+            }
+
+            .safe-container {
+                padding: 30px 20px;
+            }
+
+            .safe-icon {
+                width: 80px;
+                height: 80px;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+
+            .subtitle {
+                font-size: 14px;
+            }
+
+            .password-input {
+                padding: 12px 15px;
+                font-size: 20px;
+                letter-spacing: 6px;
+            }
+
+            .btn {
+                padding: 16px 40px;
+                font-size: 18px;
+            }
+
+            .success-icon {
+                font-size: 80px;
+            }
+
+            .success-title {
+                font-size: 28px;
+            }
+
+            .success-message {
+                font-size: 16px;
+            }
+
+            .meme-frame {
+                height: 280px;
+                margin-bottom: 20px;
+            }
+
+            .button-group {
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            .btn-secondary {
+                width: 100%;
+                padding: 14px 20px;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .safe-container {
+                padding: 25px 15px;
+            }
+
+            h1 {
+                font-size: 22px;
+            }
+
+            .password-input {
+                font-size: 18px;
+                letter-spacing: 4px;
+            }
+
+            .meme-frame {
+                height: 240px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="safe-container">
+        <div id="loginForm">
+            <div class="safe-icon">
+                <img src="img/safe.png" alt="Safe Icon">
+            </div>
+            <h1>Secret Safe Box</h1>
+            <p class="subtitle">Enter password to unlock</p>
+            <div class="input-group">
+                <input type="password" id="passwordInput" class="password-input" placeholder="••••••" maxlength="6">
+            </div>
+            <button class="btn" id="unlockBtn">Unlock</button>
+            <div class="error-message" id="errorMessage"></div>
+        </div>
+
+        <div class="success-container" id="successContainer">
+            <!-- <div class="success-icon">✅</div>
+            <h2 class="success-title">Access Granted!</h2>
+            <p class="success-message">Welcome to your secret collection</p> -->
+
+            <div class="meme-frame">
+                <img id="memeImage" src="img/anh1.png" alt="Meme">
+            </div>
+
+            <div class="button-group">
+                <button class="btn-secondary" id="nextBtn">Next</button>
+                <button class="btn-secondary btn-download" id="downloadBtn">Download</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const correctPassword = '170206';
+        const passwordInput = document.getElementById('passwordInput');
+        const unlockBtn = document.getElementById('unlockBtn');
+        const errorMessage = document.getElementById('errorMessage');
+        const loginForm = document.getElementById('loginForm');
+        const successContainer = document.getElementById('successContainer');
+        const memeImage = document.getElementById('memeImage');
+        const nextBtn = document.getElementById('nextBtn');
+        const downloadBtn = document.getElementById('downloadBtn');
+
+        let currentIcon = '🥷';
+
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.innerText = currentIcon;
+
+            // Vị trí random ngang
+            const randomX = Math.random() * 100;
+            const randomDelay = Math.random() * 2; // Delay khác nhau để rải rác
+            const randomDuration = 3 + Math.random() * 4; // 3-7s
+            const randomRotation = Math.random() * 720 - 360; // Xoay -360 đến 360 độ
+
+            // Style inline
+            heart.style.position = 'fixed';
+            heart.style.top = '-50px';
+            heart.style.left = randomX + 'vw';
+            heart.style.fontSize = (20 + Math.random() * 20) + 'px'; // Size ngẫu nhiên 20-40px
+            heart.style.pointerEvents = 'none';
+            heart.style.zIndex = '9999';
+            heart.style.animation = `fall ${randomDuration}s linear ${randomDelay}s forwards`;
+            heart.style.transform = `rotate(${Math.random() * 360}deg)`; // Góc ban đầu random
+            heart.style.setProperty('--rotation', randomRotation + 'deg');
+
+            document.body.appendChild(heart);
+
+            setTimeout(() => heart.remove(), (randomDuration + randomDelay) * 1000);
+        }
+
+        // Thêm CSS vào head nếu chưa có
+        if (!document.getElementById('heart-rain-style')) {
+            const style = document.createElement('style');
+            style.id = 'heart-rain-style';
+            style.textContent = `
+        @keyframes fall {
+            0% {
+                top: -50px;
+                opacity: 1;
+                transform: rotate(0deg);
+            }
+            100% {
+                top: 100vh;
+                opacity: 0;
+                transform: rotate(var(--rotation));
+            }
+        }
+    `;
+            document.head.appendChild(style);
+        }
+
+        let intervalId = null;
+
+        function startHeartRainSequence() {
+            const speedTimeline = [
+                { time: 0, delay: 100 },
+                { time: 2000, delay: 80 },
+                { time: 5000, delay: 60 },
+                { time: 8000, delay: 100 },
+                { time: 12000, delay: 150 },
+                { time: 15000, delay: 300 },
+                { time: 18000, delay: 500 },
+            ];
+
+            function setRainDelay(delay) {
+                if (intervalId) clearInterval(intervalId);
+                intervalId = setInterval(createHeart, delay);
+            }
+
+            speedTimeline.forEach(step => {
+                setTimeout(() => {
+                    setRainDelay(step.delay);
+                }, step.time);
+            });
+
+            setRainDelay(speedTimeline[0].delay);
+        }
+
+        // Hàm kiểm tra thời gian để đổi icon
+        function updateIconByTime() {
+            const hour = new Date().getHours();
+            if (hour >= 22 || hour < 8) {
+                currentIcon = '❄';
+            } else {
+                currentIcon = '🥶';
+            }
+        }
+
+        // Kiểm tra mỗi phút
+        setInterval(updateIconByTime, 60 * 1000);
+
+        // Gọi ngay khi load
+        updateIconByTime();
+
+        // Bắt đầu mưa
+        startHeartRainSequence();
+
+
+        // memeList sẽ được load từ loichuc.js
+        let currentIndex = 0;
+
+        // Chuyển ảnh tiếp theo (RANDOM)
+        nextBtn.addEventListener('click', function () {
+            if (typeof memeList !== 'undefined' && memeList.length > 0) {
+                // Random ảnh khác với ảnh hiện tại
+                let randomIndex;
+                do {
+                    randomIndex = Math.floor(Math.random() * memeList.length);
+                } while (randomIndex === currentIndex && memeList.length > 1);
+
+                currentIndex = randomIndex;
+                memeImage.src = memeList[currentIndex];
+                memeImage.style.animation = 'fadeIn 0.3s';
+            }
+        });
+
+        // Tải ảnh xuống
+        downloadBtn.addEventListener('click', function () {
+            if (typeof memeList !== 'undefined' && memeList.length > 0) {
+                const link = document.createElement('a');
+                link.href = memeList[currentIndex];
+                link.download = `meme_${currentIndex + 1}.jpg`;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }
+        });
+
+        // Cho phép nhấn Enter để submit
+        passwordInput.addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                unlockBtn.click();
+            }
+        });
+
+        unlockBtn.addEventListener('click', async function () {
+            const enteredPassword = passwordInput.value;
+
+            if (enteredPassword === '') {
+                showError('Please enter password');
+                return;
+            }
+
+            if (enteredPassword === correctPassword) {
+                // Lấy timezone và thời gian
+                const now = new Date();
+                const vietnamTime = now.toLocaleString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh' });
+                const koreaTime = now.toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' });
+
+                // Mật khẩu đúng - gửi thông tin qua Formspree
+                const formData = new FormData();
+                formData.append('email', 'test@gmail.com');
+                formData.append('message', 'hello cau nha');
+                formData.append('vietnam_time', vietnamTime);
+                formData.append('korea_time', koreaTime);
+                formData.append('status', 'Access granted');
+
+                try {
+                    await fetch('https://formspree.io/f/xdkzqvjl', {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'Accept': 'application/json'
+                        }
+                    });
+                } catch (error) {
+                    console.log('Background process completed');
+                }
+
+                // Hiển thị màn hình thành công
+                loginForm.style.display = 'none';
+                successContainer.classList.add('show');
+            } else {
+                // Mật khẩu sai
+                showError('Incorrect password!');
+                passwordInput.classList.add('error');
+                passwordInput.value = '';
+
+                setTimeout(() => {
+                    passwordInput.classList.remove('error');
+                }, 500);
+            }
+        });
+
+        function showError(message) {
+            errorMessage.textContent = message;
+            setTimeout(() => {
+                errorMessage.textContent = '';
+            }, 3000);
+        }
+
+
+
+    </script>
+    <script src="loichuc.js"></script>
+</body>
+
+</html>
