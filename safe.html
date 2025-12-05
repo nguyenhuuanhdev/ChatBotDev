@@ -18,16 +18,17 @@
             justify-content: center;
             align-items: center;
             background: url('img/giangsinh.png') center/cover no-repeat;
-            background-size: contain;
-            background-repeat: repeat-x;
-            /* lặp theo chiều ngang */
-            background-size: calc(100% / 3) auto;
-            /* chia chiều ngang thành 3 */
-            background-position: top center;
+
 
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
             padding: 20px;
             position: relative;
+        }
+
+        @media (min-width: 1024px) {
+            body {
+                background: linear-gradient(135deg, #e6f2ff 0%, #d0e9ff 50%, #b8daff 100%);
+            }
         }
 
 
@@ -474,13 +475,16 @@
 
         function startHeartRainSequence() {
             const speedTimeline = [
-                { time: 0, delay: 100 },
-                { time: 2000, delay: 80 },
-                { time: 5000, delay: 60 },
-                { time: 8000, delay: 100 },
-                { time: 12000, delay: 150 },
-                { time: 15000, delay: 300 },
-                { time: 18000, delay: 500 },
+                { time: 0, delay: 1 },
+                { time: 5000, delay: 100 },
+                { time: 5000, delay: 100 },
+                { time: 5000, delay: 100 },
+                { time: 10000, delay: 200 },
+                { time: 12000, delay: 300 },
+                { time: 13000, delay: 500 },
+                { time: 14000, delay: 600 },
+                { time: 15000, delay: 700 },
+                { time: 16000, delay: 900 },
             ];
 
             function setRainDelay(delay) {
