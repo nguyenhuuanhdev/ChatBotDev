@@ -257,14 +257,6 @@
         </div>
     </div>
 
-    <script>
-        if ("serviceWorker" in navigator) {
-            navigator.serviceWorker.getRegistrations().then(regs => {
-                regs.forEach(reg => reg.unregister());
-            });
-            caches.keys().then(keys => keys.forEach(k => caches.delete(k)));
-        }
-    </script>
 
     <!-- Linking Emoji Mart script for emoji picker -->
     <script src="https://cdn.jsdelivr.net/npm/emoji-mart@latest/dist/browser.js"></script>
